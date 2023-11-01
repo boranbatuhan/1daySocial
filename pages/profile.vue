@@ -4,6 +4,7 @@ const post = reactive({
         isVote:false,
         isLike:false,
         isDislike:false,
+        isFire:false
     }
 })
 
@@ -13,11 +14,13 @@ const likeBtn =()=>{
         post.vote.isVote = false
         post.vote.isLike = false
         post.vote.isDislike = false
+        post.vote.isFire = false
     }
     else{
         post.vote.isVote = true
         post.vote.isLike = true
         post.vote.isDislike = false
+        post.vote.isFire = false
     }
 }
 const dislikeBtn =()=>{
@@ -26,11 +29,32 @@ const dislikeBtn =()=>{
         post.vote.isVote = false
         post.vote.isLike = false
         post.vote.isDislike = false
+        post.vote.isFire = false
+
     }
     else{
         post.vote.isVote = true
         post.vote.isLike = false
         post.vote.isDislike = true
+        post.vote.isFire = false
+
+    }
+}
+const fireBtn =()=>{
+    if(post.vote.isVote && post.vote.isFire)
+    {
+        post.vote.isVote = false
+        post.vote.isLike = false
+        post.vote.isDislike = false
+        post.vote.isFire = false
+
+    }
+    else{
+        post.vote.isVote = true
+        post.vote.isLike = false
+        post.vote.isDislike = false
+        post.vote.isFire = true
+
     }
 }
 </script>
@@ -38,13 +62,17 @@ const dislikeBtn =()=>{
 <!-- basil icon -->
 <template>
 <div class="container mx-auto border my-4 py-4 flex items-center justify-start flex-col">
+    <div @click="fireBtn" class="relative group">
+        <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-rose-600 w-6 h-6 blur-md opacity-0 group-hover:opacity-100 transition-all"></span>
+        <Icon :name="post.vote.isVote ==true ? post.vote.isFire ==true ? 'basil:fire-solid' : 'basil:fire-outline' : 'basil:fire-outline'" size="2rem" :class="{'!text-rose-600':post.vote.isVote==true && post.vote.isFire==true }" class="relative text-stone-50 hover:saturate-200 hover:text-rose-600 cursor-pointer" />
+    </div>
     <div @click="likeBtn" class="relative group">
         <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-my-blue w-6 h-6 blur-md opacity-0 group-hover:opacity-100 transition-all"></span>
-        <Icon :name="post.vote.isVote ==true ? post.vote.isLike ==true ? 'basil:like-solid' : 'basil:like-outline' : 'basil:like-outline'" size="2rem" :class="{'!text-my-blue':post.vote.isVote==true && post.vote.isLike==true }" class="relative text-stone-50 hover:text-my-blue cursor-pointer" />
+        <Icon :name="post.vote.isVote ==true ? post.vote.isLike ==true ? 'basil:like-solid' : 'basil:like-outline' : 'basil:like-outline'" size="2rem" :class="{'!text-my-blue':post.vote.isVote==true && post.vote.isLike==true }" class="relative text-stone-50 hover:saturate-200 hover:text-my-blue cursor-pointer" />
     </div>
     <div @click="dislikeBtn" class="relative group">
         <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-my-pink w-6 h-6 blur-md opacity-0 group-hover:opacity-100 transition-all"></span>
-        <Icon :name="post.vote.isVote==true ? post.vote.isDislike==true ? 'basil:dislike-solid' : 'basil:dislike-outline' : 'basil:dislike-outline'" size="2rem" :class="{'!text-my-pink':post.vote.isVote==true && post.vote.isDislike==true }" class="relative text-stone-50 hover:text-my-pink cursor-pointer" />
+        <Icon :name="post.vote.isVote==true ? post.vote.isDislike==true ? 'basil:dislike-solid' : 'basil:dislike-outline' : 'basil:dislike-outline'" size="2rem" :class="{'!text-my-pink':post.vote.isVote==true && post.vote.isDislike==true }" class="relative text-stone-50 hover:saturate-200 hover:text-my-pink cursor-pointer" />
     </div>
     <!-- profile photo user info start -->
     <div class="flex border w-96 flex-wrap">
