@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: "hoves";
+    src: url("~~/assets/fonts/hoves.ttf");
+}
+@font-face {
+    font-family: "hoves-thin";
+    src: url("~~/assets/fonts/hoves-thin.ttf");
+}
+@font-face {
+    font-family: "hoves-outline";
+    src: url("~~/assets/fonts/hoves-outline.ttf");
+}
+@font-face {
+    font-family: "hoves-bold";
+    src: url("~~/assets/fonts/hoves-bold.ttf");
+}

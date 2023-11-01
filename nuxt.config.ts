@@ -1,17 +1,22 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt", "@nuxtjs/supabase", "@nuxt/image"],
+  modules: [
+    "@nuxtjs/tailwindcss", 
+    "@pinia/nuxt", 
+    // "@nuxtjs/supabase", 
+    'nuxt-icon',
+    "@nuxt/image"],
   pinia: {
     storesDirs: ['./store/**', './custom-folder/store/**'],
   },
-  supabase:{
-    redirectOptions: {
-      login: '/',
-      callback: '/confirm',
-      exclude: ["/",],
-    }
-  },
+  // supabase:{
+  //   redirectOptions: {
+  //     login: '/',
+  //     callback: '/confirm',
+  //     exclude: ["/",],
+  //   }
+  // },
   
   postcss: {
     plugins: {
@@ -27,7 +32,7 @@ export default defineNuxtConfig({
     head:{
       title:"1Day Social",
       meta:[{name:'description',content:'1 day social media. Just likes shown after 24 hours.'}],
-      link:[{rel:'icon',href:'_nuxt/assets/images/1daysocial-fullblue-pink.png'}]
+      link:[{rel:'icon',href:'/1daysocial-fullblue-pink.png'}]
     }
   }
 })
