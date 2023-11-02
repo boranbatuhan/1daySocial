@@ -70,7 +70,9 @@
 
 </template>
 <script setup>
-const posts = usePostsStore().getPost
+const posts = computed(()=>{
+    return usePostsStore().getPost
+})
 const user = computed(()=>{
     return useUserStore().getUser
 })

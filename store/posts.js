@@ -2,10 +2,20 @@ export const usePostsStore = defineStore('posts', {
     state: () => ({
          posts:[
             {   id:"p1",
+                content:"Lorem ipsum dolor sit amet consectetur, adipisicing elit. Placeat, at.",
+                author:"batuhanma",
                 likes:[],
                 dislikes:[]
             },
             {   id:"p2",  
+                content:"Lorem ipsum dolor Lorem ipsum dolor sit amet consectetur, adipisicing elit. Placeat, at. sit amet consectetur, adipisicing elit. Placeat, at.",
+                author:"melodika",
+                likes:[],
+                dislikes:[]
+            },
+            {   id:"p3",  
+                content:"Lorem",
+                author:"flüt",
                 likes:[],
                 dislikes:[]
             },
