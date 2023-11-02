@@ -1,5 +1,5 @@
 <template>
-    <div class="p-4 border rounded-lg">
+    <div class="p-4 border rounded-lg" :class="user.theme">
         <p class="text-3xl">{{props.post.id}}</p>
     <ul>
         <li class="flex gap-4 items-center justify-start">
@@ -38,8 +38,7 @@ const props = defineProps({
 const post = reactive({
     vote:{
         isVote:false,
-        isLike:false,
-        isDislike:false,
+
         isFire:false
     }
 })
@@ -54,18 +53,9 @@ const fireBtn =(postid)=>{
     }
 }
 const likeBtn =(postid)=>{
-
     postsStore.postLike(postid,user.userid)
-   
-
 }
 const dislikeBtn =(postid)=>{
     postsStore.postDislike(postid,user.userid)
-
-
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>

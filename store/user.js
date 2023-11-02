@@ -3,6 +3,7 @@ export const useUserStore = defineStore('user', {
          user:{
             username:"batuhanma",
             userid:"123qwe345ZXC",
+            theme:"",
             posts:[],
             liked:[],
             disliked:[],
@@ -48,6 +49,9 @@ export const useUserStore = defineStore('user', {
       if(postType == 'dislike'){
          return this.user.disliked.includes(postid) ? true : false
       }
+     },
+     setTheme(themecolor){
+      this.user.theme=themecolor
      }
     },
   })
