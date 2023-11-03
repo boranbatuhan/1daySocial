@@ -1,10 +1,10 @@
 <template>
-    <p class="text-3xl">{{props.post.id}}</p>
+    <!-- <p class="text-3xl">{{props.post.id}}</p>
     <p class="text-3xl">{{props.post.countdown}}</p>
     <p class="text-3xl">{{props.post.isActive}}</p>
-    <p class="text-3xl">{{(post.timer/1000).toFixed(0)}}</p>
+    <p class="text-3xl">{{(post.timer/1000).toFixed(0)}}</p> -->
     <!-- POST CARD START -->
-    <div class=" border rounded-lg max-w-lg w-[32rem]  relative" :class="[user.theme ,{'!opacity-40' : props.post.countdown == false && props.post.likes.length < props.post.dislikes.length}]">
+    <div class=" border rounded-lg max-w-lg w-[32rem]  relative" :class="[props.post.theme ,{'!opacity-40' : props.post.countdown == false && props.post.likes.length < props.post.dislikes.length}]">
       <!-- post add date    -->
       <p class="absolute top-1 left-3 text-xs select-none">{{dateFormat(props.post.date)}}</p>
       <!-- button fire start -->
@@ -23,20 +23,20 @@
       <!-- content end -->
 
         <!-- time counter start -->
-        <div class="w-full h-fit mt-2 p-0  overflow-hidden group flex items-end justify-between " :class="user.theme">
+        <div v-if="props.post.countdown"  class="w-full h-fit mt-2 p-0  overflow-hidden group flex items-end justify-between " :class="props.post.theme">
           <p :class="{'opacity-50':post.timer<=0}" class=" text-xs select-none ml-3">{{dateFormat(props.post.date)}}</p>
           <p :class="{'opacity-50':post.timer>0}"  class=" text-xs select-none mr-3">{{dateFormat(props.post.finaldate)}}</p>
         </div>
         <!-- time counter end -->
 
         <!-- timer slider start -->
-        <div class="w-full h-fit mt-2 p-0  overflow-hidden group flex items-start justify-start " :class="user.theme">
+        <div v-if="props.post.countdown" class="w-full h-fit mt-2 p-0  overflow-hidden group flex items-start justify-start " :class="props.post.theme">
           <input type="range" class="w-full h-2 m-0 p-0 select-none pointer-events-none outline-none border-0 ring-0" :min="props.post.date" :max="props.post.finaldate" :value="props.post.finaldate - post.timer">
         </div>
         <!-- timer slider end -->
         
         <!-- buttons start -->
-        <ul class="flex gap-4  p-2  w-full " :class="[user.theme,{'pointer-events-none':props.post.countdown==false}]" >
+        <ul class="flex gap-4  p-2  w-full " :class="[props.post.theme,{'pointer-events-none':props.post.countdown==false}]" >
           <!-- button like start -->
           <li class="flex gap-1 items-center justify-start" :class="{'flex-row-reverse gap-0 text-xl':props.post.countdown==false}">
             <div @click="likeBtn(props.post.id)" class="relative group w-fit">

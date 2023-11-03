@@ -8,6 +8,7 @@ export const usePostsStore = defineStore('posts', {
                 finaldate: 1698991980901+3600000,
                 countdown:true,
                 isActive:true,
+                theme:"!text-fuchsia-500 !border-fuchsia-500",
                 likes:[],
                 dislikes:[]
             },
@@ -18,6 +19,7 @@ export const usePostsStore = defineStore('posts', {
                 finaldate: 1699008309335+800000,
                 countdown:true,
                 isActive:true,
+                theme:"!text-orange-500 !border-orange-500",
                 likes:[],
                 dislikes:[]
             },
@@ -28,6 +30,7 @@ export const usePostsStore = defineStore('posts', {
                 finaldate: 1699008309335+3000000,
                 countdown:true,
                 isActive:true,
+                theme:"!text-lime-500 !border-lime-500",
                 likes:[],
                 dislikes:[]
             },
