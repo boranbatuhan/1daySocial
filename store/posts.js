@@ -6,22 +6,28 @@ export const usePostsStore = defineStore('posts', {
                 author:"batuhanma",
                 date:1698991980901,
                 finaldate: 1698991980901+3600000,
+                countdown:true,
+                isActive:true,
                 likes:[],
                 dislikes:[]
             },
             {   id:"p2",  
                 content:"Lorem ipsum dolor Lorem ipsum dolor sit amet consectetur, adipisicing elit. Placeat, at. sit amet consectetur, adipisicing elit. Placeat, at.",
                 author:"melodika",
-                date:1698961788801,
-                finaldate: 1698961788801+3600000,
+                date:1699008309335,
+                finaldate: 1699008309335+800000,
+                countdown:true,
+                isActive:true,
                 likes:[],
                 dislikes:[]
             },
             {   id:"p3",  
                 content:"Lorem",
                 author:"flüt",
-                date:1698965810238,
-                finaldate: 1698965810238+3600000,
+                date:1699008309335,
+                finaldate: 1699008309335+3000000,
+                countdown:true,
+                isActive:true,
                 likes:[],
                 dislikes:[]
             },
@@ -67,6 +73,20 @@ export const usePostsStore = defineStore('posts', {
               else if( i.id == postId && i.dislikes.includes(userName)){
                 i.dislikes = i.dislikes.filter ( u => u!=userName)
                 useUserStore().postunDislike(i.id)
+              }
+        } )
+      },
+      countdownDone(postId){
+        this.posts.forEach(i => {
+            if(i.id == postId ){
+                i.countdown=false
+                if(i.likes.length> i.dislikes.length)
+                {
+                  i.isActive=true
+                }
+                else if( i.likes.length<= i.dislikes.length){
+                  i.isActive=false
+                }
               }
         } )
       },

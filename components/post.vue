@@ -1,58 +1,80 @@
-
 <template>
     <p class="text-3xl">{{props.post.id}}</p>
+    <p class="text-3xl">{{props.post.countdown}}</p>
+    <p class="text-3xl">{{props.post.isActive}}</p>
     <p class="text-3xl">{{(post.timer/1000).toFixed(0)}}</p>
-    
-    <div class=" border rounded-lg max-w-lg relative" :class="user.theme">
-        <p class="absolute top-1 left-3 text-xs select-none">{{dateFormat(props.post.date)}}</p>
-    <div class="absolute top-1 right-1">
+    <!-- POST CARD START -->
+    <div class=" border rounded-lg max-w-lg w-[32rem]  relative" :class="[user.theme ,{'!opacity-40' : props.post.countdown == false && props.post.likes.length < props.post.dislikes.length}]">
+      <!-- post add date    -->
+      <p class="absolute top-1 left-3 text-xs select-none">{{dateFormat(props.post.date)}}</p>
+      <!-- button fire start -->
+      <div class="absolute top-1 right-1">
         <div @click="fireBtn(props.post.id)" class="relative group w-fit h-fit  cursor-pointer" >
-            <span  class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-rose-600 group-hover:w-6 w-0 group-hover:h-6 h-0 blur-md  transition-all"></span>
-            <Icon :name="post.vote.isFire ==true ? 'basil:fire-solid' : 'basil:fire-outline'" size="2rem" :class="{'!text-rose-600': post.vote.isFire==true }" class="relative text-stone-50 group-hover:saturate-200 group-hover:text-rose-600" />
+          <span  class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-rose-600 group-hover:w-6 w-0 group-hover:h-6 h-0 blur-md  transition-all"></span>
+          <Icon :name="post.vote.isFire ==true ? 'basil:fire-solid' : 'basil:fire-outline'" size="2rem" :class="{'!text-rose-600': post.vote.isFire==true }" class="relative text-stone-50 group-hover:saturate-200 group-hover:text-rose-600" />
         </div>
-    </div>
-        <div class="pb-3 pt-6 px-6">
-            <p class="before:content-['@'] select-none cursor-pointer w-fit hover:underline">{{props.post.author}}</p>
-            <p class="!text-white text-justify py-2">{{props.post.content}}</p>
-        </div>
+      </div>
+      <!-- button fire end -->
+      <!-- content start -->
+      <div class="pb-3 pt-6 px-6">
+        <p class="before:content-['@'] select-none cursor-pointer w-fit hover:underline mt-4">{{props.post.author}}</p>
+        <p class="!text-white text-justify py-2">{{props.post.content}}</p>
+      </div>
+      <!-- content end -->
 
-        
+        <!-- time counter start -->
         <div class="w-full h-fit mt-2 p-0  overflow-hidden group flex items-end justify-between " :class="user.theme">
-        <p :class="{'opacity-50':post.timer<=0}" class=" text-xs select-none ml-3">{{dateFormat(props.post.date)}}</p>
-        <p :class="{'opacity-50':post.timer>0}"  class=" text-xs select-none ml-3">{{dateFormat(props.post.finaldate)}}</p>
-            
+          <p :class="{'opacity-50':post.timer<=0}" class=" text-xs select-none ml-3">{{dateFormat(props.post.date)}}</p>
+          <p :class="{'opacity-50':post.timer>0}"  class=" text-xs select-none mr-3">{{dateFormat(props.post.finaldate)}}</p>
         </div>
+        <!-- time counter end -->
+
+        <!-- timer slider start -->
         <div class="w-full h-fit mt-2 p-0  overflow-hidden group flex items-start justify-start " :class="user.theme">
-        <input type="range" class="w-full h-2 m-0 p-0 select-none pointer-events-none outline-none border-0 ring-0" :min="props.post.date" :max="props.post.finaldate" :value="props.post.finaldate - post.timer">
-    </div>
-    <ul class="flex gap-4  p-2  w-full" :class="user.theme" >
-        <li class="flex gap-1 items-center justify-start">
+          <input type="range" class="w-full h-2 m-0 p-0 select-none pointer-events-none outline-none border-0 ring-0" :min="props.post.date" :max="props.post.finaldate" :value="props.post.finaldate - post.timer">
+        </div>
+        <!-- timer slider end -->
+        
+        <!-- buttons start -->
+        <ul class="flex gap-4  p-2  w-full " :class="[user.theme,{'pointer-events-none':props.post.countdown==false}]" >
+          <!-- button like start -->
+          <li class="flex gap-1 items-center justify-start" :class="{'flex-row-reverse gap-0 text-xl':props.post.countdown==false}">
             <div @click="likeBtn(props.post.id)" class="relative group w-fit">
-                <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-my-blue group-hover:w-6 w-0 group-hover:h-6 h-0 blur-md  transition-all"></span>
-                <Icon :name="userStore.checkPostFunc(props.post.id,'like') ==true ? 'basil:like-solid' : 'basil:like-outline'" size="2rem" :class="{'!text-my-blue':userStore.checkPostFunc(props.post.id,'like') }" class="relative text-stone-50 hover:saturate-200 hover:text-my-blue cursor-pointer" />
+              <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-my-blue group-hover:w-6 w-0 group-hover:h-6 h-0 blur-md  transition-all"></span>
+              <Icon :name="userStore.checkPostFunc(props.post.id,'like') == true ? 'basil:like-solid' : 'basil:like-outline'" :size="props.post.countdown ? '2rem' : '1.5rem'" :class="{'!text-my-blue':userStore.checkPostFunc(props.post.id,'like'),'!text-my-blue':props.post.countdown==false }" class="relative text-stone-50 hover:saturate-200 hover:text-my-blue cursor-pointer" />
             </div>
-            <p class="font-bold select-none text-my-blue">{{props.post.likes.length}}</p>
-        </li>
-        <li class="flex gap-1 items-center justify-start">
+            <p class="font-bold select-none text-my-blue mt-1">{{props.post.likes.length}}</p>
+          </li>
+          <!-- button like end -->
+
+          <!-- button dislike start -->
+          <li class="flex gap-1 items-center justify-start" :class="{'flex-row-reverse gap-0 text-xl':props.post.countdown==false}">
             <div @click="dislikeBtn(props.post.id)" class="relative group w-fit">
-                <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-my-pink group-hover:w-6 w-0 group-hover:h-6 h-0 blur-md  transition-all"></span>
-                <Icon :name="userStore.checkPostFunc(props.post.id,'dislike')==true ? 'basil:dislike-solid' : 'basil:dislike-outline' " size="2rem" :class="{'!text-my-pink':userStore.checkPostFunc(props.post.id,'dislike') }" class="relative text-stone-50 hover:saturate-200 hover:text-my-pink cursor-pointer" />
+              <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-my-pink group-hover:w-6 w-0 group-hover:h-6 h-0 blur-md  transition-all"></span>
+              <Icon :name="userStore.checkPostFunc(props.post.id,'dislike')==true ? 'basil:dislike-solid' : 'basil:dislike-outline' " :size="props.post.countdown ? '2rem' : '1.5rem'" :class="{'!text-my-pink':userStore.checkPostFunc(props.post.id,'dislike') ,'!text-my-pink':props.post.countdown == false}" class="relative text-stone-50 hover:saturate-200 hover:text-my-pink cursor-pointer" />
             </div>
-            <p class="font-bold select-none text-my-pink">{{props.post.dislikes.length}}</p>
-        </li>
-    </ul>
+            <p class="font-bold select-none text-my-pink mt-1">{{props.post.dislikes.length}}</p>
+          </li>
+          <!-- button dislike end -->
+        </ul>
+        <!-- buttons end -->
     
 
-</div>
+    </div>
+    <!-- POST CARD END -->
+
 </template>
 <script setup>
 const postsStore = usePostsStore()
 const user = useUserStore().getUser
 const userStore = useUserStore()
 
+// data from db via props
 const props = defineProps({
     post:Object
 })
+
+// inner post functions
 const post = reactive({
     vote:{
         isVote:false,
@@ -64,6 +86,7 @@ const post = reactive({
 })
 
 
+// fire button controller
 const fireBtn =(postid)=>{
     if(post.vote.isFire)
     {
@@ -73,32 +96,42 @@ const fireBtn =(postid)=>{
         post.vote.isFire = true
     }
 }
+
+// like controller
 const likeBtn =(postid)=>{
+  if(props.post.countdown ==true){
     postsStore.postLike(postid,user.userid)
+  }
 }
+// dislike controller
 const dislikeBtn =(postid)=>{
+  if(props.post.countdown ==true){
     postsStore.postDislike(postid,user.userid)
+  }
 }
 
-
+// date formatter
 const dateFormat = (time)=>{
     // 3m 600k =1saat
     var date = new Date(time)
     
-    var fullDate = date.getDate()+
+    var fullDate = (date.getDate() <10 ? "0"+date.getDate():date.getDate()) +
     "/"+(date.getMonth()+1)+
     "/"+date.getFullYear()+
-    " "+date.getHours()+
-    ":"+date.getMinutes()
+    " "+(date.getHours() <10 ? "0"+ date.getHours():date.getHours())+
+    ":"+(date.getMinutes() <10 ? "0"+ date.getMinutes():date.getMinutes())
     
     
     return  fullDate
 }
+
+// timer 
 const timer = setInterval(() => {
     post.timer=props.post.finaldate - Date.now()
     if(props.post.finaldate - Date.now() <=0)
     {
         post.timer=0
+        postsStore.countdownDone(props.post.id)
         clearInterval(timer)
     }
 }, 1000);
@@ -129,7 +162,7 @@ input[type=range]::-webkit-slider-thumb {
   height: 8px;
   width: 8px;
   border-radius: 1px;
-  background: #9bfb00;
+  background: #ffffff;
   cursor: pointer;
   -webkit-appearance: none;
   margin-top: 0px;
@@ -151,7 +184,7 @@ input[type=range]::-moz-range-thumb {
   height: 8px;
   width: 8px;
   border-radius: 1px;
-  background: #9bfb00;
+  background: #ffffff;
   cursor: pointer;
 }
 input[type=range]::-ms-track {
@@ -181,7 +214,7 @@ input[type=range]::-ms-thumb {
   height: 8px;
   width: 8px;
   border-radius: 1px;
-  background: #9bfb00;
+  background: #ffffff;
   cursor: pointer;
 }
 input[type=range]:focus::-ms-fill-lower {
