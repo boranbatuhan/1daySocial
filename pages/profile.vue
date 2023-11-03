@@ -1,15 +1,50 @@
 <!-- basil icon -->
 <template>
 <div class="container mx-auto  my-4 py-4 flex items-center justify-start flex-col">
+
+    <!-- edit modal start -->
+    <div v-if="openEditModal" class="w-screen h-screen flex items-center justify-center bg-stone-950/70 fixed z-[99999] top-0 left-0 ">
+        
+        <div class="bg-stone-950 w-96 py-5 rounded-lg  border flex flex-col items-center justify-center gap-4">
+            <div class="w-24 h-24 rounded-full border overflow-hidden" :class="user.theme">
+                <label for="imgcontainer" class="cursor-pointer group relative">
+                    <div class="bg-stone-800/60 w-full h-full absolute invisible group-hover:visible flex items-center justify-center" >
+                        <Icon :class="user.theme" class="drop-shadow-lg" name="basil:upload-outline" size="3rem"/>
+                    </div>
+                    <input type="file" id="imgcontainer" class="hidden" @change="changePhoto($event)">
+                    <NuxtImg draggable="false" class="w-full h-full object-cover select-none" :src="photoTemp" placeholder="/1daysocial-pink.png" />
+                </label>
+            </div>
+            <label  for="idtemp" class="before:content-['@'] " :class="user.theme">
+                <input type="text" id="idtemp" class="bg-transparent underline focus:underline-offset-8 outline-none border-y border-r border-transparent focus:border-inherit pr-2 py-1 rounded-lg" v-model="usernameTemp">
+            </label>
+
+            <!-- buttons -->
+            <div class="w-full flex flex-row items-center justify-around">
+                <div @click="saveChanges" class="flex items-center justify-center w-32 bg-green-500 px-4 rounded-lg select-none cursor-pointer hover:bg-green-700">
+                    <Icon name="basil:check-solid" size="2rem" />
+                    <p>Save</p>
+                </div>
+                <div @click="discardChanges" class="flex items-center justify-center w-32 bg-red-500 px-4 rounded-lg select-none cursor-pointer hover:bg-red-700">
+                    <Icon name="basil:cross-solid" size="2rem" />
+                    <p>Close</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- edit modal end -->
     <!-- profile photo user info start -->
-    <div class="flex  w-96 flex-wrap p-3" :class="user.theme">
+    <div class="flex  w-96 flex-wrap p-3  relative" :class="user.theme">
+        <div @click="openEditModal=true" class=" saturate-200 absolute top-1 right-1 group cursor-pointer">
+            <Icon :class="user.theme" name="basil:settings-alt-outline" size="1.5rem"  class="group-hover:rotate-180 transition-all duration-500" />
+        </div>
         <!-- pp photo -->
         <div class="w-24 h-24 rounded-full border overflow-hidden" :class="user.theme">
-            <NuxtImg draggable="false" class="w-full h-full object-cover select-none" :src="'https://cdn.ntvspor.net/a55708a61ffa4fdb9fc7d59a018a96e8.jpg?crop=0,0,940,529&w=710&h=403&mode=crop'" placeholder="/1daysocial-pink.png" />
+            <NuxtImg draggable="false" class="w-full h-full object-cover select-none" :src="user.photo" placeholder="/1daysocial-pink.png" />
         </div>
         <div class="flex items-start justify-center px-3 gap-7 flex-col">
             <!-- username -->
-            <p class="before:content-['@']">username</p>
+            <p class="before:content-['@']">{{user.username}}</p>
             <!-- thema selector -->
             <ul class="flex">
                 <li class="group" @click="setTheme('!text-lime-500 !border-lime-500')"><div class="border w-8 h-5 rounded-md mx-px cursor-pointer group-hover:-translate-y-2 group-hover:border-stone-950 transition-all text-lime-500 border-lime-500 bg-lime-500"></div></li>
@@ -78,7 +113,10 @@ const user = computed(()=>{
 })
 const userStore = useUserStore()
 
+const openEditModal=ref(false)
 const selectedTab =ref("")
+const photoTemp = ref(user.value.photo)
+const usernameTemp = ref(user.value.username)
 const selectTab=(tabName)=>{
     if(selectedTab.value==tabName){
         selectedTab.value=""
@@ -92,6 +130,21 @@ const setTheme =(theme)=>{
     userStore.setTheme(theme)
 }
 
+const changePhoto= event=>{
+    const photoLink =  URL.createObjectURL(event.target.files[0])
+    photoTemp.value=photoLink
+}
+const saveChanges =()=>{
+    userStore.updatePhoto(photoTemp.value)
+    userStore.updateUsername(usernameTemp.value)
+    openEditModal.value=false
+}
+const discardChanges =()=>{
+    
+    usernameTemp.value=user.value.username
+    photoTemp.value=user.value.photo
+    openEditModal.value=false
+}
 </script>
 
 <style>

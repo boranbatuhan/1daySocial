@@ -4,6 +4,7 @@ export const useUserStore = defineStore('user', {
             username:"batuhanma",
             userid:"123qwe345ZXC",
             theme:"",
+            photo:'https://cdn.ntvspor.net/a55708a61ffa4fdb9fc7d59a018a96e8.jpg?crop=0,0,940,529&w=710&h=403&mode=crop',
             posts:[],
             liked:[],
             disliked:[],
@@ -52,6 +53,12 @@ export const useUserStore = defineStore('user', {
      },
      setTheme(themecolor){
       this.user.theme=themecolor
+     },
+     updatePhoto(photolink){
+      this.user.photo=photolink
+     },
+     updateUsername(userName){
+      this.user.username=userName
      }
     },
   })
