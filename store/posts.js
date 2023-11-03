@@ -10,7 +10,8 @@ export const usePostsStore = defineStore('posts', {
                 isActive:true,
                 theme:"!text-fuchsia-500 !border-fuchsia-500",
                 likes:[],
-                dislikes:[]
+                dislikes:[],
+                tag:"gsmaçı"
             },
             {   id:"p2",  
                 content:"Lorem ipsum dolor Lorem ipsum dolor sit amet consectetur, adipisicing elit. Placeat, at. sit amet consectetur, adipisicing elit. Placeat, at.",
@@ -21,7 +22,8 @@ export const usePostsStore = defineStore('posts', {
                 isActive:true,
                 theme:"!text-orange-500 !border-orange-500",
                 likes:[],
-                dislikes:[]
+                dislikes:[],
+                tag:"cars"
             },
             {   id:"p3",  
                 content:"Lorem",
@@ -32,7 +34,8 @@ export const usePostsStore = defineStore('posts', {
                 isActive:true,
                 theme:"!text-lime-500 !border-lime-500",
                 likes:[],
-                dislikes:[]
+                dislikes:[],
+                tag:""
             },
          ]
         }),

@@ -18,6 +18,8 @@
       <!-- content start -->
       <div class="pb-3 pt-6 px-6">
         <p class="before:content-['@'] select-none cursor-pointer w-fit hover:underline mt-4">{{props.post.author}}</p>
+        <p v-if="props.post.tag" class="text-end text-xs mb-2 before:content-['#'] hover:underline cursor-pointer" >{{props.post.tag}}</p>
+
         <p class="!text-white text-justify py-2">{{props.post.content}}</p>
       </div>
       <!-- content end -->
