@@ -6,7 +6,9 @@ export default defineNuxtConfig({
     "@pinia/nuxt", 
     // "@nuxtjs/supabase", 
     'nuxt-icon',
-    "@nuxt/image"],
+    "@nuxt/image",
+    '@vueuse/nuxt',
+  ],
   pinia: {
     storesDirs: ['./store/**', './custom-folder/store/**'],
   },
