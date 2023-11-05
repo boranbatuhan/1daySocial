@@ -11,8 +11,6 @@ export const useUserStore = defineStore('user', {
             fired:[],
          }
          
-
-         
         }),
     getters: {
       getUser(state){

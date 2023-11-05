@@ -55,7 +55,6 @@ const addPost =()=>{
             dislikes:[],
             tag:postForm.tag
             }
-            console.log('newPost :>> ', newPost);
             postsStore.addPost(newPost)
         resetForm()
     }

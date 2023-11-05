@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   modules: [
     "@nuxtjs/tailwindcss", 
     "@pinia/nuxt", 
-    // "@nuxtjs/supabase", 
+    "@nuxtjs/supabase", 
     'nuxt-icon',
     "@nuxt/image",
     '@vueuse/nuxt',
@@ -13,13 +13,13 @@ export default defineNuxtConfig({
   pinia: {
     storesDirs: ['./store/**', './custom-folder/store/**'],
   },
-  // supabase:{
-  //   redirectOptions: {
-  //     login: '/',
-  //     callback: '/confirm',
-  //     exclude: ["/",],
-  //   }
-  // },
+  supabase:{
+    redirectOptions: {
+      login: '/',
+      callback: '/callback',
+      exclude: ["/",],
+    }
+  },
   
   postcss: {
     plugins: {
