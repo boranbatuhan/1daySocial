@@ -93,20 +93,39 @@
 
     <!-- posts container start -->
     <div class="max-w-xl px-3 py-2  my-3">
-        <ul>
+        <ul v-if="selectedTab == 'All'">
             <li v-for="post in posts" :key="post.id" class="my-3">
                 <post :post="post" />
             </li>
         </ul>
+        <ul v-if="selectedTab == 'Accepted'">
+            <li v-for="postA in postsAccepted" :key="postA.id" class="my-3">
+                <post :post="postA" />
+            </li>
+        </ul>
+        <ul v-if="selectedTab == 'Deleted'">
+            <li v-for="postD in postsDeleted" :key="postD.id" class="my-3">
+                <post :post="postD" />
+            </li>
+        </ul>
     </div>
     <!-- posts container end -->
-
 </div>
 
 </template>
 <script setup>
 const posts = computed(()=>{
-    return usePostsStore().getPost
+    let tempPosts = usePostsStore().getUserPosts.sort((a,b) => b.date - a.date)
+    tempPosts = tempPosts.sort((a,b) => b.isAccepted - a.isAccepted)
+    return tempPosts
+})
+const postsAccepted = computed(()=>{
+    const tempPosts = usePostsStore().getUserAcceptedPosts.sort((a,b) => b.date - a.date)
+    return tempPosts
+})
+const postsDeleted = computed(()=>{
+    const tempPosts = usePostsStore().getUserDeletedPosts.sort((a,b) => b.date - a.date)
+    return tempPosts
 })
 const user = computed(()=>{
     return useUserStore().getUser
@@ -114,12 +133,18 @@ const user = computed(()=>{
 const userStore = useUserStore()
 
 const openEditModal=ref(false)
-const selectedTab =ref("")
+const selectedTab =ref("All")
 const photoTemp = ref(user.value.photo)
 const usernameTemp = ref(user.value.username)
 const selectTab=(tabName)=>{
     if(selectedTab.value==tabName){
-        selectedTab.value=""
+        if(selectedTab.value=="All")
+        {
+            selectedTab.value="All"
+        }
+        else{
+            selectedTab.value="All"
+        }
     }
     else{
         selectedTab.value=tabName

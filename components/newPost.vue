@@ -45,10 +45,12 @@ const addPost =()=>{
             id:`p${postsStore.getPost.length + 1}`,
             content:postForm.content,
             author:userTemp.username,
+            auid:userTemp.userid,
             date:nowDate,
-            finaldate: nowDate+86400000,   //1000 = 1 sec
+            finaldate: nowDate+10000,   //1000 = 1 sec
             countdown:true,
             isActive:true,
+            isAccepted:true,
             theme:userTemp.theme,
             likes:[],
             dislikes:[],
