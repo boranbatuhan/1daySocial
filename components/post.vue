@@ -4,7 +4,7 @@
     <p class="text-3xl">{{props.post.isActive}}</p>
     <p class="text-3xl">{{(post.timer/1000).toFixed(0)}}</p> -->
     <!-- POST CARD START -->
-    <div class=" border rounded-lg max-w-lg w-[32rem]  relative" :class="[props.post.theme ,{'!opacity-40' : props.post.countdown == false && props.post.likes.length < props.post.dislikes.length}]">
+    <div class=" border rounded-lg max-w-lg w-[32rem]  relative" :class="[props.post.theme ,{'!opacity-40 translate-x-10' : props.post.countdown == false && props.post.likes.length < props.post.dislikes.length}]">
       <!-- post add date    -->
       <p class="absolute top-1 left-3 text-xs select-none">{{dateFormat(props.post.date)}}</p>
       <!-- button fire start -->

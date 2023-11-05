@@ -21,7 +21,8 @@
 <script setup>
 import { useWindowScroll } from '@vueuse/core'
 const posts = computed(()=>{
-    return usePostsStore().getPost
+    const tempPosts = usePostsStore().getPost.sort((a,b) => b.date - a.date)
+    return tempPosts
 })
 const { x, y } = useWindowScroll()
 

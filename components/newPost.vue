@@ -26,11 +26,11 @@ const user = computed(()=>{
     return useUserStore().getUser
 })
 const userStore = useUserStore()
+const postsStore = usePostsStore()
 const iconhover = ref(false)
 const postForm = reactive({
     content:"",
     tag:"",
-
 })
 const resetForm = ()=>{
     postForm.content=""
@@ -38,7 +38,24 @@ const resetForm = ()=>{
 }
 const addPost =()=>{
     if(postForm.content){
-        console.log('postForm :>> ', postForm);
+
+        const userTemp = userStore.getUser
+        const nowDate = Date.now()
+        const newPost =  {   
+            id:`p${postsStore.getPost.length + 1}`,
+            content:postForm.content,
+            author:userTemp.username,
+            date:nowDate,
+            finaldate: nowDate+86400000,   //1000 = 1 sec
+            countdown:true,
+            isActive:true,
+            theme:userTemp.theme,
+            likes:[],
+            dislikes:[],
+            tag:postForm.tag
+            }
+            console.log('newPost :>> ', newPost);
+            postsStore.addPost(newPost)
         resetForm()
     }
 }

@@ -96,6 +96,9 @@ export const usePostsStore = defineStore('posts', {
               }
         } )
       },
+      addPost(newPost){
+        this.posts = [...this.posts, newPost]
+      }
 
     },
   })
