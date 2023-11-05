@@ -8,7 +8,6 @@ export const usePostsStore = defineStore('posts', {
                 date:1698991980901,
                 finaldate: 1698991980901+3600000,
                 countdown:true,
-                isActive:true,
                 isAccepted:false,
                 theme:"!text-fuchsia-500 !border-fuchsia-500",
                 likes:[],
@@ -22,7 +21,6 @@ export const usePostsStore = defineStore('posts', {
                 date:1699008309335,
                 finaldate: 1699008309335+800000,
                 countdown:true,
-                isActive:true,
                 isAccepted:false,
                 theme:"!text-orange-500 !border-orange-500",
                 likes:[],
@@ -36,8 +34,20 @@ export const usePostsStore = defineStore('posts', {
                 date:1699008309335,
                 finaldate: 1699008309335+3000000,
                 countdown:true,
-                isActive:true,
                 isAccepted:false,
+                theme:"!text-lime-500 !border-lime-500",
+                likes:[],
+                dislikes:[],
+                tag:""
+            },
+            {   id:"p3",  
+                content:"Lorem",
+                author:"flüt",
+                auid:'123qwe345ASD',
+                date:1699008309335,
+                finaldate: 1699008309335+3000000,
+                countdown:true,
+                isAccepted:true,
                 theme:"!text-lime-500 !border-lime-500",
                 likes:[],
                 dislikes:[],
@@ -67,6 +77,12 @@ export const usePostsStore = defineStore('posts', {
         var user = useUserStore().getUser
         var userPosts = state.posts
         userPosts = state.posts.filter(i => i.auid == user.userid && !i.isAccepted)
+        console.log('userPosts :>> ', userPosts);
+        return userPosts
+      },
+      getFeed(state){
+        var userPosts = state.posts
+        userPosts = state.posts.filter(i => i.isAccepted == true || ( i.isAccepted == true && i.countdown) || ( i.isAccepted == true && !i.countdown))
         console.log('userPosts :>> ', userPosts);
         return userPosts
       }
@@ -115,11 +131,9 @@ export const usePostsStore = defineStore('posts', {
                 i.countdown=false
                 if(i.likes.length> i.dislikes.length)
                 {
-                  i.isActive=true
                   i.isAccepted=true
                 }
                 else if( i.likes.length<= i.dislikes.length){
-                  i.isActive=false
                   i.isAccepted=false
                 }
               }

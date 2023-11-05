@@ -1,8 +1,5 @@
 <template>
-    <!-- <p class="text-3xl">{{props.post.id}}</p>
-    <p class="text-3xl">{{props.post.countdown}}</p>
-    <p class="text-3xl">{{props.post.isActive}}</p>
-    <p class="text-3xl">{{(post.timer/1000).toFixed(0)}}</p> -->
+
     <!-- POST CARD START -->
     <div class=" border rounded-lg max-w-lg w-[32rem]  relative" :class="[props.post.theme ,{'!opacity-40 translate-x-10' : props.post.countdown == false && !props.post.isAccepted}]">
       <!-- post add date    -->

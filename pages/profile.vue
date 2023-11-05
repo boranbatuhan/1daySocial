@@ -93,49 +93,72 @@
 
     <!-- posts container start -->
     <div class="max-w-xl px-3 py-2  my-3">
+        <!-- all post start -->
         <ul v-if="selectedTab == 'All'">
             <li v-for="post in posts" :key="post.id" class="my-3">
                 <post :post="post" />
             </li>
         </ul>
+        <!-- all post end -->
+
+        <!-- accepted post start -->
         <ul v-if="selectedTab == 'Accepted'">
             <li v-for="postA in postsAccepted" :key="postA.id" class="my-3">
                 <post :post="postA" />
             </li>
         </ul>
+        <!-- accepted post end -->
+        
+        <!-- not accepted post start -->
         <ul v-if="selectedTab == 'Deleted'">
             <li v-for="postD in postsDeleted" :key="postD.id" class="my-3">
                 <post :post="postD" />
             </li>
         </ul>
+        <!-- not accepted post end -->
     </div>
     <!-- posts container end -->
 </div>
 
 </template>
 <script setup>
+
+// user posts
 const posts = computed(()=>{
     let tempPosts = usePostsStore().getUserPosts.sort((a,b) => b.date - a.date)
     tempPosts = tempPosts.sort((a,b) => b.isAccepted - a.isAccepted)
     return tempPosts
 })
+
+// user accepted posts after countdown
 const postsAccepted = computed(()=>{
     const tempPosts = usePostsStore().getUserAcceptedPosts.sort((a,b) => b.date - a.date)
     return tempPosts
 })
+
+// user not accepted posts after countdown
 const postsDeleted = computed(()=>{
     const tempPosts = usePostsStore().getUserDeletedPosts.sort((a,b) => b.date - a.date)
     return tempPosts
 })
+// user informations 
 const user = computed(()=>{
     return useUserStore().getUser
 })
+
+// user store
 const userStore = useUserStore()
 
+// edit modal toggle
 const openEditModal=ref(false)
+// selected tab 
 const selectedTab =ref("All")
+// for pp 
 const photoTemp = ref(user.value.photo)
+// for username
 const usernameTemp = ref(user.value.username)
+
+// tab selector
 const selectTab=(tabName)=>{
     if(selectedTab.value==tabName){
         if(selectedTab.value=="All")
@@ -151,19 +174,25 @@ const selectTab=(tabName)=>{
     }
 }
 
+// set color theme
 const setTheme =(theme)=>{
     userStore.setTheme(theme)
 }
 
+// change photo 
 const changePhoto= event=>{
     const photoLink =  URL.createObjectURL(event.target.files[0])
     photoTemp.value=photoLink
 }
+
+// save edits
 const saveChanges =()=>{
     userStore.updatePhoto(photoTemp.value)
     userStore.updateUsername(usernameTemp.value)
     openEditModal.value=false
 }
+
+// cancel edits
 const discardChanges =()=>{
     
     usernameTemp.value=user.value.username

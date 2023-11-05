@@ -49,7 +49,6 @@ const addPost =()=>{
             date:nowDate,
             finaldate: nowDate+10000,   //1000 = 1 sec
             countdown:true,
-            isActive:true,
             isAccepted:true,
             theme:userTemp.theme,
             likes:[],
