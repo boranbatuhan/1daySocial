@@ -1,6 +1,6 @@
 <template>
     <div class="container mx-auto pb-7 ">
-        <ul class="flex flex-col items-center justify-start">
+        <ul class="flex flex-col items-center justify-start" v-auto-animate>
             <li class=" !bg-stone-950 z-[99] rounded-lg">
                <new-post/> 
                <div class="bg-gradient-to-b from-stone-950 to-transparent w-full h-8"></div>
@@ -10,7 +10,7 @@
                     <Icon name="basil:caret-up-solid" size="2rem"/>
                 </div>
             </li>
-            <li v-for="post in posts" :key="post.id" class=" my-2">
+            <li v-for="post in posts" :key="post.id" class=" my-2" >
                 <post :post="post" />
             </li>
 

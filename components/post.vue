@@ -1,11 +1,11 @@
 <template>
 
     <!-- POST CARD START -->
-    <div class=" border rounded-lg max-w-lg w-[32rem]  relative" :class="[props.post.theme ,{'!opacity-40 translate-x-10' : props.post.countdown == false && !props.post.isAccepted}]">
+    <div v-auto-animate class=" border rounded-lg max-w-lg w-[32rem]  transition-all relative" :class="[props.post.theme ,{'!opacity-20 hover:!opacity-80' : props.post.countdown == false && !props.post.isAccepted}]">
       <!-- post add date    -->
       <p class="absolute top-1 left-3 text-xs select-none">{{dateFormat(props.post.date)}}</p>
       <!-- button fire start -->
-      <div class="absolute top-1 right-1">
+      <div class="absolute top-1 right-1" v-if="props.post.auid != user.userid">
         <div @click="fireBtn(props.post.id)" class="relative group w-fit h-fit  cursor-pointer" >
           <span  class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-rose-600 group-hover:w-6 w-0 group-hover:h-6 h-0 blur-md  transition-all"></span>
           <Icon :name="post.vote.isFire ==true ? 'basil:fire-solid' : 'basil:fire-outline'" size="2rem" :class="{'!text-rose-600': post.vote.isFire==true }" class="relative text-stone-50 group-hover:saturate-200 group-hover:text-rose-600" />

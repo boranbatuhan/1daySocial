@@ -1,6 +1,6 @@
 <!-- basil icon -->
 <template>
-<div class="container mx-auto  my-4 py-4 flex items-center justify-start flex-col">
+<div class="container mx-auto  py-4 flex items-center justify-start flex-col">
 
     <!-- edit modal start -->
     <div v-if="openEditModal" class="w-screen h-screen flex items-center justify-center bg-stone-950/70 fixed z-[99999] top-0 left-0 ">
@@ -83,7 +83,7 @@
 
 
     <!-- tab nav start -->
-    <div class="flex w-96 items-center justify-between text-xl">
+    <div class="flex w-96 items-center justify-between text-xl" v-auto-animate>
         <div :class="[user.theme,{'border-b':selectedTab=='All'}]" @click="selectTab('All')" class="shrink-0 h-10 cursor-pointer w-1/4 text-center hover:bg-stone-800 py-1 group"><Icon size="2rem" name="basil:rows-solid" class="group-hover:hidden inline"/> <p class="hidden group-hover:inline">All</p> </div>
         <div :class="[user.theme,{'border-b':selectedTab=='Accepted'}]" @click="selectTab('Accepted')" class="shrink-0 h-10 cursor-pointer w-1/4 text-center hover:bg-stone-800 py-1 group"><Icon size="2rem" name="basil:check-solid" class="group-hover:hidden inline"/> <p class="hidden group-hover:inline">Accepted</p> </div>
         <div :class="[user.theme,{'border-b':selectedTab=='Deleted'}]" @click="selectTab('Deleted')" class="shrink-0 h-10 cursor-pointer w-1/4 text-center hover:bg-stone-800 py-1 group"><Icon size="2rem" name="basil:cross-solid" class="group-hover:hidden inline"/> <p class="hidden group-hover:inline">Deleted</p> </div>
@@ -94,7 +94,7 @@
     <!-- posts container start -->
     <div class="max-w-xl px-3 py-2  my-3">
         <!-- all post start -->
-        <ul v-if="selectedTab == 'All'">
+        <ul v-if="selectedTab == 'All'" v-auto-animate>
             <li v-for="post in posts" :key="post.id" class="my-3">
                 <post :post="post" />
             </li>
@@ -102,7 +102,7 @@
         <!-- all post end -->
 
         <!-- accepted post start -->
-        <ul v-if="selectedTab == 'Accepted'">
+        <ul v-if="selectedTab == 'Accepted'" v-auto-animate>
             <li v-for="postA in postsAccepted" :key="postA.id" class="my-3">
                 <post :post="postA" />
             </li>
@@ -110,7 +110,7 @@
         <!-- accepted post end -->
         
         <!-- not accepted post start -->
-        <ul v-if="selectedTab == 'Deleted'">
+        <ul v-if="selectedTab == 'Deleted'" v-auto-animate>
             <li v-for="postD in postsDeleted" :key="postD.id" class="my-3">
                 <post :post="postD" />
             </li>

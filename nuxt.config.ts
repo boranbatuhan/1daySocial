@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     'nuxt-icon',
     "@nuxt/image",
     '@vueuse/nuxt',
+    '@formkit/auto-animate/nuxt'
   ],
   pinia: {
     storesDirs: ['./store/**', './custom-folder/store/**'],
