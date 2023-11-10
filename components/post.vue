@@ -1,20 +1,22 @@
 <template>
 
     <!-- POST CARD START -->
-    <div v-auto-animate class=" border rounded-lg max-w-lg w-[32rem]  transition-all relative" :class="[props.post.theme ,{'!opacity-20 hover:!opacity-80' : props.post.countdown == false && !props.post.isAccepted}]">
+    <div v-auto-animate class=" border rounded-lg max-w-lg w-[32rem]  transition-all relative" :class="[props.post.theme ,{'!opacity-20 hover:!opacity-80' : props.post.isCountdown == false && !props.post.isAccepted}]">
       <!-- post add date    -->
       <p class="absolute top-1 left-3 text-xs select-none">{{dateFormat(props.post.date)}}</p>
       <!-- button fire start -->
-      <div class="absolute top-1 right-1" v-if="props.post.auid != user.userid">
+      <!-- <div class="absolute top-1 right-1" v-if="props.post.authorid != user.userid">
         <div @click="fireBtn(props.post.id)" class="relative group w-fit h-fit  cursor-pointer" >
           <span  class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-rose-600 group-hover:w-6 w-0 group-hover:h-6 h-0 blur-md  transition-all"></span>
           <Icon :name="post.vote.isFire ==true ? 'basil:fire-solid' : 'basil:fire-outline'" size="2rem" :class="{'!text-rose-600': post.vote.isFire==true }" class="relative text-stone-50 group-hover:saturate-200 group-hover:text-rose-600" />
         </div>
-      </div>
+      </div> -->
       <!-- button fire end -->
       <!-- content start -->
       <div class="pb-3 pt-6 px-6">
         <p class="before:content-['@'] select-none cursor-pointer w-fit hover:underline mt-4">{{props.post.author}}</p>
+        <p class="before:content-['@'] select-none cursor-pointer w-fit hover:underline mt-4">{{props.post.authorid}}</p>
+        <p class="before:content-['@'] select-none cursor-pointer w-fit hover:underline mt-4">{{props.post.id}}</p>
         <p v-if="props.post.tag" class="text-end text-xs mb-2 before:content-['#'] hover:underline cursor-pointer" >{{props.post.tag}}</p>
 
         <p class="!text-white text-justify py-2">{{props.post.content}}</p>
@@ -22,35 +24,35 @@
       <!-- content end -->
 
         <!-- time counter start -->
-        <div v-if="props.post.countdown"  class="w-full h-fit mt-2 p-0  overflow-hidden group flex items-end justify-between " :class="props.post.theme">
+        <div v-if="props.post.isCountdown"  class="w-full h-fit mt-2 p-0  overflow-hidden group flex items-end justify-between " :class="props.post.theme">
           <p :class="{'opacity-50':post.timer<=0}" class=" text-xs select-none ml-3">{{dateFormat(props.post.date)}}</p>
           <p :class="{'opacity-50':post.timer>0}"  class=" text-xs select-none mr-3">{{dateFormat(props.post.finaldate)}}</p>
         </div>
         <!-- time counter end -->
 
         <!-- timer slider start -->
-        <div v-if="props.post.countdown" class="w-full h-fit mt-2 p-0  overflow-hidden group flex items-start justify-start " :class="props.post.theme">
+        <div v-if="props.post.isCountdown" class="w-full h-fit mt-2 p-0  overflow-hidden group flex items-start justify-start " :class="props.post.theme">
           <input type="range" class="w-full h-2 m-0 p-0 select-none pointer-events-none outline-none border-0 ring-0" :min="props.post.date" :max="props.post.finaldate" :value="props.post.finaldate - post.timer">
         </div>
         <!-- timer slider end -->
         
         <!-- buttons start -->
-        <ul class="flex gap-4  p-2  w-full " :class="[props.post.theme,{'pointer-events-none':props.post.countdown==false}]" >
+        <ul v-if="checkUser" :disabled="checkdisabled" class="flex gap-4  p-2  w-full " :class="[props.post.theme,{'pointer-events-none':props.post.isCountdown==false , '!pointer-events-none !cursor-wait' : checkdisabled==true}]" >
           <!-- button like start -->
-          <li class="flex gap-1 items-center justify-start" :class="{'flex-row-reverse gap-0 text-xl':props.post.countdown==false}">
-            <div @click="likeBtn(props.post.id)" class="relative group w-fit">
+          <li class="flex gap-1 items-center justify-start" :class="{'flex-row-reverse gap-0 text-xl':props.post.isCountdown==false}">
+            <div @click="likeBtn()" class="relative group w-fit">
               <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-my-blue group-hover:w-6 w-0 group-hover:h-6 h-0 blur-md  transition-all"></span>
-              <Icon :name="userStore.checkPostFunc(props.post.id,'like') == true ? 'basil:like-solid' : 'basil:like-outline'" :size="props.post.countdown ? '2rem' : '1.5rem'" :class="{'!text-my-blue':userStore.checkPostFunc(props.post.id,'like'),'!text-my-blue':props.post.countdown==false }" class="relative text-stone-50 hover:saturate-200 hover:text-my-blue cursor-pointer" />
+              <Icon :name="checkPostLikeButton == true ? 'basil:like-solid' : 'basil:like-outline'" :size="props.post.isCountdown ? '2rem' : '1.5rem'" :class="{'!text-my-blue':checkPostLikeButton,'!text-my-blue':props.post.isCountdown==false }" class="relative text-stone-50 hover:saturate-200 hover:text-my-blue cursor-pointer" />
             </div>
             <p class="font-bold select-none text-my-blue mt-1">{{props.post.likes.length}}</p>
           </li>
           <!-- button like end -->
 
           <!-- button dislike start -->
-          <li class="flex gap-1 items-center justify-start" :class="{'flex-row-reverse gap-0 text-xl':props.post.countdown==false}">
-            <div @click="dislikeBtn(props.post.id)" class="relative group w-fit">
+          <li  class="flex gap-1 items-center justify-start" :class="{'flex-row-reverse gap-0 text-xl':props.post.isCountdown==false }">
+            <div @click="dislikeBtn()" class="relative group w-fit">
               <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-my-pink group-hover:w-6 w-0 group-hover:h-6 h-0 blur-md  transition-all"></span>
-              <Icon :name="userStore.checkPostFunc(props.post.id,'dislike')==true ? 'basil:dislike-solid' : 'basil:dislike-outline' " :size="props.post.countdown ? '2rem' : '1.5rem'" :class="{'!text-my-pink':userStore.checkPostFunc(props.post.id,'dislike') ,'!text-my-pink':props.post.countdown == false}" class="relative text-stone-50 hover:saturate-200 hover:text-my-pink cursor-pointer" />
+              <Icon :name="checkPostDislikeButton==true ? 'basil:dislike-solid' : 'basil:dislike-outline' " :size="props.post.isCountdown ? '2rem' : '1.5rem'" :class="{'!text-my-pink':checkPostDislikeButton ,'!text-my-pink':props.post.isCountdown == false}" class="relative text-stone-50 hover:saturate-200 hover:text-my-pink cursor-pointer" />
             </div>
             <p class="font-bold select-none text-my-pink mt-1">{{props.post.dislikes.length}}</p>
           </li>
@@ -64,10 +66,12 @@
 
 </template>
 <script setup>
-const postsStore = usePostsStore()
-const user = useUserStore().getUser
+const user = computed(()=>{
+  return useUserStore().getUser
+})
 const userStore = useUserStore()
 
+const checkdisabled = ref(false)
 // data from db via props
 const props = defineProps({
     post:Object
@@ -75,37 +79,32 @@ const props = defineProps({
 
 // inner post functions
 const post = reactive({
-    vote:{
-        isVote:false,
-
-        isFire:false
-    },
     timer:0,
     timeLeft:props.post.finaldate - Date.now()
 })
 
 
-// fire button controller
-const fireBtn =(postid)=>{
-    if(post.vote.isFire)
-    {
-        post.vote.isFire = false
-    }
-    else{
-        post.vote.isFire = true
-    }
-}
 
 // like controller
-const likeBtn =(postid)=>{
-  if(props.post.countdown ==true){
-    postsStore.postLike(postid,user.userid)
+const likeBtn =()=>{
+  // props.post.isCountdown ==true &&
+  if( user.value.userid != props.post.authorid){
+    checkdisabled.value=true
+    usePostsStore().postLike(props.post.id,user.value.userid)
+    setTimeout(() => {
+      checkdisabled.value=false
+    }, 1000);
   }
 }
 // dislike controller
-const dislikeBtn =(postid)=>{
-  if(props.post.countdown ==true){
-    postsStore.postDislike(postid,user.userid)
+const dislikeBtn =()=>{
+  // props.post.isCountdown ==true &&
+  if( user.value.userid != props.post.authorid){
+    checkdisabled.value=true
+    usePostsStore().postDislike(props.post.id,user.value.userid)
+    setTimeout(() => {
+      checkdisabled.value=false
+    }, 1000);
   }
 }
 
@@ -113,14 +112,11 @@ const dislikeBtn =(postid)=>{
 const dateFormat = (time)=>{
     // 3m 600k =1saat
     var date = new Date(time)
-    
     var fullDate = (date.getDate() <10 ? "0"+date.getDate():date.getDate()) +
     "/"+(date.getMonth()+1)+
     "/"+date.getFullYear()+
     " "+(date.getHours() <10 ? "0"+ date.getHours():date.getHours())+
     ":"+(date.getMinutes() <10 ? "0"+ date.getMinutes():date.getMinutes())
-    
-    
     return  fullDate
 }
 
@@ -130,12 +126,31 @@ const timer = setInterval(() => {
     if(props.post.finaldate - Date.now() <=0)
     {
         post.timer=0
-        postsStore.countdownDone(props.post.id)
+        usePostsStore().countdownDone(props.post.id)
         clearInterval(timer)
     }
 }, 1000);
 
+const checkUser = computed(()=>{
+return props.post.authorid === user.value.userid ? false : true
+})
+
+const checkPostDislikeButton = computed(()=>{
+  return props.post.dislikes.includes(user.value.userid)
+})
+
+const checkPostLikeButton = computed(()=>{
+  return props.post.likes.includes(user.value.userid)
+})
+
 </script>
+
+
+
+
+
+
+
 <style>
 input[type=range] {
   -webkit-appearance: none;

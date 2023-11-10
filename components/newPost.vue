@@ -1,7 +1,6 @@
 <template>
-
     <!-- POST CARD START -->
-    <div class=" border rounded-lg max-w-lg w-[32rem] !bg-stone-950 z-[99] relative p-4" :class="user.theme">
+    <div v-if="user" class=" border rounded-lg max-w-lg w-[32rem] !bg-stone-950 z-[99] relative p-4" :class="user.theme">
         <div class="w-full flex items-center justify-between">
             <p class="text-end text-xs mb-2 before:content-['@']" >{{user.username}}</p>
             <p class="text-end text-xs mb-2">{{postForm.content.length}} / 256</p>
@@ -22,11 +21,12 @@
 
 </template>
 <script setup>
+
+const userStore = useUserStore()
+const postsStore = usePostsStore()
 const user = computed(()=>{
     return useUserStore().getUser
 })
-const userStore = useUserStore()
-const postsStore = usePostsStore()
 const iconhover = ref(false)
 const postForm = reactive({
     content:"",
@@ -38,24 +38,26 @@ const resetForm = ()=>{
 }
 const addPost =()=>{
     if(postForm.content){
-
-        const userTemp = userStore.getUser
         const nowDate = Date.now()
-        const newPost =  {   
-            id:`p${postsStore.getPost.length + 1}`,
+        const userTemp = userStore.getUser
+        const userid = useSupabaseUser().value.id
+        const username = useSupabaseUser().value.user_metadata.username
+        const newPost =  { 
+
             content:postForm.content,
-            author:userTemp.username,
-            auid:userTemp.userid,
+            author:username,
+            auid:userid,
             date:nowDate,
-            finaldate: nowDate+10000,   //1000 = 1 sec
+            finaldate: nowDate+600000,   //1000 = 1 sec
             countdown:true,
             isAccepted:true,
             theme:userTemp.theme,
             likes:[],
             dislikes:[],
             tag:postForm.tag
-            }
-            postsStore.addPost(newPost)
+        }
+        postsStore.addPost(newPost)
+        postsStore.getPosts
         resetForm()
     }
 }

@@ -1,62 +1,68 @@
+
 export const useUserStore = defineStore('user', {
     state: () => ({
          user:{
-            username:"batuhanma",
-            userid:"123qwe345ZXC",
-            theme:"",
-            photo:'https://cdn.ntvspor.net/a55708a61ffa4fdb9fc7d59a018a96e8.jpg?crop=0,0,940,529&w=710&h=403&mode=crop',
-            posts:[],
-            liked:[],
-            disliked:[],
-            fired:[],
+
+
          }
          
         }),
     getters: {
       getUser(state){
-        return state.user
+         const user = useSupabaseUser()
+         if(user.value){
+            state.user = user.value.user_metadata
+            return state.user
+         }
       }
     },
     actions: {
      postLike(postid){
-      if(!this.user.liked.includes(postid)){
-         this.user.liked.push(postid)
-         this.user.disliked= this.user.disliked.filter(i => i != postid)
+      if(!this.user.likes.includes(postid)){
+         this.user.likes.push(postid)
+         this.user.dislikes= this.user.dislikes.filter(i => i != postid)
       }
      },
      postunLike(postid){
-      this.user.liked= this.user.liked.filter(i => i!=postid)
+      this.user.likes= this.user.likes.filter(i => i!=postid)
      },
      postDislike(postid){
-         if(!this.user.disliked.includes(postid)){
-            this.user.disliked.push(postid)
-            this.user.liked= this.user.liked.filter(i => i != postid)
+         if(!this.user.dislikes.includes(postid)){
+            this.user.dislikes.push(postid)
+            this.user.likes= this.user.likes.filter(i => i != postid)
 
          }
      },
      postunDislike(postid){
-      this.user.disliked= this.user.disliked.filter(i => i!=postid)
+      this.user.dislikes= this.user.dislikes.filter(i => i!=postid)
 
      },
      postFire(postid){
         this.user.fired.push(postid)
      },
-     checkPostFunc(postid,postType){
-      if(postType == 'like'){
-         return this.user.liked.includes(postid) ? true : false
-      }
-      if(postType == 'dislike'){
-         return this.user.disliked.includes(postid) ? true : false
-      }
-     },
+
      setTheme(themecolor){
-      this.user.theme=themecolor
+        this.user.theme=themecolor
+        const client = useSupabaseClient()
+      const update = async()=>{
+          try {
+              const { data, error } = await client.auth.updateUser({
+              data: { 
+                  theme:themecolor
+              }
+              })
+              if(error) throw error;
+          } catch (error) {
+          }
+      }
+      update()
      },
      updatePhoto(photolink){
       this.user.photo=photolink
      },
      updateUsername(userName){
       this.user.username=userName
-     }
+     },
+
     },
   })

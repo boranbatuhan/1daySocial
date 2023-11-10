@@ -1,130 +1,154 @@
 export const usePostsStore = defineStore('posts', {
     state: () => ({
-         posts:[
-            {   id:"p1",
-                content:"Lorem ipsum dolor sit amet consectetur, adipisicing elit. Placeat, at.",
-                author:"batuhanma",
-                auid:'123qwe345ZXC',
-                date:1698991980901,
-                finaldate: 1698991980901+3600000,
-                countdown:true,
-                isAccepted:false,
-                theme:"!text-fuchsia-500 !border-fuchsia-500",
-                likes:[],
-                dislikes:[],
-                tag:"gsmaçı"
-            },
-            {   id:"p2",  
-                content:"Lorem ipsum dolor Lorem ipsum dolor sit amet consectetur, adipisicing elit. Placeat, at. sit amet consectetur, adipisicing elit. Placeat, at.",
-                author:"melodika",
-                auid:'123qwe345OUI',
-                date:1699008309335,
-                finaldate: 1699008309335+800000,
-                countdown:true,
-                isAccepted:false,
-                theme:"!text-orange-500 !border-orange-500",
-                likes:[],
-                dislikes:[],
-                tag:"cars"
-            },
-            {   id:"p3",  
-                content:"Lorem",
-                author:"flüt",
-                auid:'123qwe345ASD',
-                date:1699008309335,
-                finaldate: 1699008309335+3000000,
-                countdown:true,
-                isAccepted:false,
-                theme:"!text-lime-500 !border-lime-500",
-                likes:[],
-                dislikes:[],
-                tag:""
-            },
-            {   id:"p3",  
-                content:"Lorem",
-                author:"flüt",
-                auid:'123qwe345ASD',
-                date:1699008309335,
-                finaldate: 1699008309335+3000000,
-                countdown:true,
-                isAccepted:true,
-                theme:"!text-lime-500 !border-lime-500",
-                likes:[],
-                dislikes:[],
-                tag:""
-            },
-         ]
-        }),
+     posts:[]
+    }),
     getters: {
-      getPost(state){
+      getPosts(state){
+        const client = useSupabaseClient()
+        const getPostDB = async()=>{
+          try {
+              const { data, error } = await client
+            .from('posts')
+            .select('*')
+            state.posts=data
+              if(error) throw error
+          } catch (error) {
+              console.log('error :>> ', error);
+          }
+        }
+        getPostDB()
         return state.posts
       },
       getUserPosts(state){
         var user = useUserStore().getUser
-        var userPosts = state.posts
-         userPosts = state.posts.filter(i => i.auid == user.userid)
-        console.log('userPosts :>> ', userPosts);
+        var userPosts = state.posts.filter(i => i.authorid == user.userid)
         return userPosts
       },
-      getUserAcceptedPosts(state){
-        var user = useUserStore().getUser
-        var userPosts = state.posts
-        userPosts = state.posts.filter(i => i.auid == user.userid && i.isAccepted)
-        console.log('userPosts :>> ', userPosts);
-        return userPosts
-      },
-      getUserDeletedPosts(state){
-        var user = useUserStore().getUser
-        var userPosts = state.posts
-        userPosts = state.posts.filter(i => i.auid == user.userid && !i.isAccepted)
-        console.log('userPosts :>> ', userPosts);
-        return userPosts
-      },
-      getFeed(state){
-        var userPosts = state.posts
-        userPosts = state.posts.filter(i => i.isAccepted == true || ( i.isAccepted == true && i.countdown) || ( i.isAccepted == true && !i.countdown))
-        console.log('userPosts :>> ', userPosts);
-        return userPosts
-      }
+
     },
     actions: {
-      postFire(postId){
-         this.posts.forEach(i => {
-            if(i.id == postId){
-             
-            }
-        } )
-      },
-      postLike(postId,userName){
-        this.posts.forEach(i => {
-            if(i.id == postId && !i.likes.includes(userName)){
-              i.likes.push(userName)
-              if(i.dislikes.includes(userName)){
-                i.dislikes = i.dislikes.filter(a => a != userName)
-              }
-              useUserStore().postLike(i.id)
-            }
-            else if( i.id == postId && i.likes.includes(userName)){
-              i.likes = i.likes.filter ( u => u!=userName)
-              useUserStore().postunLike(i.id)
-            }
-        } )
-      },
-      postDislike(postId,userName){
-        this.posts.forEach(i => {
-            if(i.id == postId && !i.dislikes.includes(userName)){
-                i.dislikes.push(userName)
-                if(i.likes.includes(userName)){
-                  i.likes = i.likes.filter(a => a != userName)
-                }
-                useUserStore().postDislike(i.id)
-              }
-              else if( i.id == postId && i.dislikes.includes(userName)){
-                i.dislikes = i.dislikes.filter ( u => u!=userName)
-                useUserStore().postunDislike(i.id)
-              }
-        } )
-      },
+  
+    async postLikeAction(postId,likesTemp,postlikes){
+      var client = useSupabaseClient()
+      
+      try {
+      // user metadata update
+        const { data, error } = await client.auth.updateUser({
+          data: { 
+            likes:likesTemp
+          }
+          })
+
+      // post update
+          const { error:error1 } = await client
+          .from('posts')
+          .update({likes: postlikes})
+          .eq( "id", postId )
+          console.log("database guncellendi")
+          if(error) throw error;
+      } catch (error) {
+      }
+  },
+  async postDislikeAction(postId,dislikesTemp,postDislikes){
+    var client = useSupabaseClient()
+
+    try {
+      // user metadata update
+      const { data, error } = await client.auth.updateUser({
+      data: { 
+        dislikes:dislikesTemp
+      }
+      })
+
+      // post update
+    const { error:error1 } = await client
+    .from('posts')
+    .update({dislikes: postDislikes})
+    .eq( "id", postId )
+
+        if(error) throw error;
+    } catch (error) {
+    }
+  }
+  ,
+  postLike(postId,userId){
+      var client = useSupabaseClient()
+      var likesTemp = [...useUserStore().getUser.likes] //user liked posts
+      var userlikesTemp = [...this.getPosts.filter(i=> i.id == postId)] // selected post
+      var postlikes = userlikesTemp[0].likes            //post likes
+      //-----------------------------------------------------------------------
+      var dislikesTemp = [...useUserStore().getUser.dislikes]//user disliked posts
+      var userDislikesTemp = [...this.getPosts.filter(i=> i.id == postId)]  // selected post
+      var postDislikes = userDislikesTemp[0].dislikes   //post dislikes
+  
+
+
+      if(likesTemp.includes(postId) == false && postlikes.includes(userId) == false)
+      {
+        //+0 like _ +1 dislike ( -1 dislike +1 like ) => +1 like _ +0 dislike
+        if(dislikesTemp.includes(postId) == true && postDislikes.includes(userId) == true){
+          dislikesTemp = dislikesTemp.filter(i=> i!=postId)
+          postDislikes = postDislikes.filter(i=> i!=userId)
+          this.postDislikeAction(postId,dislikesTemp,postDislikes)
+          likesTemp.push(postId)
+          postlikes.push(userId)
+          this.postLikeAction(postId,likesTemp,postlikes)
+        }
+        //+1 like
+        else{
+          likesTemp.push(postId)
+          postlikes.push(userId)
+          console.log("cccc")
+          this.postLikeAction(postId,likesTemp,postlikes)
+        }
+      }
+      //if clicked liked button +1 like to +0 like 
+      else if(likesTemp.includes(postId) == true && postlikes.includes(userId) == true){
+        likesTemp = likesTemp.filter(i=> i!=postId)
+        postlikes = postlikes.filter(i=> i!=userId)
+        this.postLikeAction(postId,likesTemp,postlikes)
+      }   
+    }
+  ,
+  
+    postDislike(postId,userId){
+      var client = useSupabaseClient()
+      var dislikesTemp = [...useUserStore().getUser.dislikes]//user disliked posts
+      var userDislikesTemp = [...this.getPosts.filter(i=> i.id == postId)]  // selected post
+      var postDislikes = userDislikesTemp[0].dislikes   //post dislikes
+      //-----------------------------------------------------------------------
+      var likesTemp = [...useUserStore().getUser.likes] //user liked posts
+      var userlikesTemp = [...this.getPosts.filter(i=> i.id == postId)] // selected post
+      var postlikes = userlikesTemp[0].likes            //post likes
+ 
+      if(dislikesTemp.includes(postId) == false && postDislikes.includes(userId) == false)
+      {
+
+      //+1 like _ +0 dislike ( +1 dislike -1 like ) => 0 like _ +1 dislike
+      if(likesTemp.includes(postId) == true && postlikes.includes(userId) == true){
+        likesTemp = likesTemp.filter(i=> i!=postId)
+        postlikes = postlikes.filter(i=> i!=userId)
+        this.postLikeAction(postId,likesTemp,postlikes)
+        dislikesTemp.push(postId)
+        postDislikes.push(userId)
+        this.postDislikeAction(postId,dislikesTemp,postDislikes)
+        console.log("içerir")
+      }   
+      //+1 dislike
+      else{
+        dislikesTemp.push(postId)
+        postDislikes.push(userId)
+        this.postDislikeAction(postId,dislikesTemp,postDislikes)
+      }
+      }
+      //if clicked liked button +1 dislike to +0 dislike 
+      else if(dislikesTemp.includes(postId) == true && postDislikes.includes(userId) == true){
+        dislikesTemp = dislikesTemp.filter(i=> i!=postId)
+        postDislikes = postDislikes.filter(i=> i!=userId)
+        this.postDislikeAction(postId,dislikesTemp,postDislikes)
+      }
+  
+    },
       countdownDone(postId){
         this.posts.forEach(i => {
             if(i.id == postId ){
@@ -141,6 +165,54 @@ export const usePostsStore = defineStore('posts', {
       },
       addPost(newPost){
         this.posts = [...this.posts, newPost]
+        const client = useSupabaseClient()
+        
+        const postValue = {
+          content:newPost.content,
+          author:newPost.author,
+          authorid:newPost.auid,
+          date:newPost.date,
+          finaldate:newPost.finaldate,
+          isCountdown:newPost.countdown,
+          isAccepted:newPost.isAccepted,
+          theme:newPost.theme,
+          likes:newPost.likes,
+          dislikes:newPost.dislikes,
+          tag:newPost.tag,
+         }
+
+
+        // post id to user metadata
+        const updateProfile  = async(data)=>{
+          const tempPosts= useSupabaseUser().value.user_metadata.posts
+          tempPosts.push(data[0].id)
+          try {
+              const { data, error } = await client.auth.updateUser({
+              data: { 
+                posts:tempPosts
+              }
+              })
+              if(error) throw error;
+          } catch (error) {
+          }
+        }
+        // upload post to DB
+        const postToDB = async ()=>{
+          try {
+             const { data, error } = await client.from('posts').insert([postValue]).select();
+             updateProfile(data)
+             if(error) throw error;
+          } catch (error) {
+             console.log('error :>> ', error);
+          }
+         }
+         postToDB()
+      },
+      getLikes(postId){
+        this.getPosts
+        const selectedpost = this.posts.filter(i => i.id == postId)
+        console.log('selectedpost :>> ', selectedpost[0].likes);
+        return selectedpost[0].likes
       }
 
     },

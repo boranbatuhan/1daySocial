@@ -19,12 +19,22 @@
 </template>
 
 <script setup>
+definePageMeta({
+    middleware:"after-auth"
+})
+onMounted(()=>{
+    useUserStore().getUser
+    usePostsStore().getPosts
+})
+
 import { useWindowScroll } from '@vueuse/core'
+const client = useSupabaseClient()
+const { x, y } = useWindowScroll()
+
 const posts = computed(()=>{
-    let tempPosts = usePostsStore().getFeed.sort((a,b) => b.date - a.date)
+    let tempPosts = usePostsStore().getPosts.sort((a,b) => b.date - a.date)
     return tempPosts
 })
-const { x, y } = useWindowScroll()
 
 const scrollTop=()=>{
     window.scrollTo({

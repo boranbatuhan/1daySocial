@@ -1,6 +1,6 @@
 <!-- basil icon -->
 <template>
-<div class="container mx-auto  py-4 flex items-center justify-start flex-col">
+<div v-if="usersb"  class="container mx-auto  py-4 flex items-center justify-start flex-col">
 
     <!-- edit modal start -->
     <div v-if="openEditModal" class="w-screen h-screen flex items-center justify-center bg-stone-950/70 fixed z-[99999] top-0 left-0 ">
@@ -34,12 +34,12 @@
     </div>
     <!-- edit modal end -->
     <!-- profile photo user info start -->
-    <div class="flex  w-96 flex-wrap p-3  relative" :class="user.theme">
+    <div  class="flex  w-96 flex-wrap p-3  relative" :class="user.theme">
         <div @click="openEditModal=true" class=" saturate-200 absolute top-1 right-1 group cursor-pointer">
             <Icon :class="user.theme" name="basil:settings-alt-outline" size="1.5rem"  class="group-hover:rotate-180 transition-all duration-500" />
         </div>
         <!-- pp photo -->
-        <div class="w-24 h-24 rounded-full border overflow-hidden" :class="user.theme">
+        <div  class="w-24 h-24 rounded-full border overflow-hidden" :class="user.theme">
             <NuxtImg draggable="false" class="w-full h-full object-cover select-none" :src="user.photo" placeholder="/1daysocial-pink.png" />
         </div>
         <div class="flex items-start justify-center px-3 gap-7 flex-col">
@@ -57,20 +57,25 @@
             </ul>
         </div>
 
-        
+        <p >likes : {{user.likes}}</p>
         <!-- counters  -->
         <ul class="flex flex-wrap gap-3 items-center justify-between w-full px-2 my-3">
-            <li class="w-full text-center" >
-                <div class="shrink-0 border-b w-24 mx-auto flex items-center justify-center gap-2"  :class="user.theme" > <Icon name="basil:invoice-outline" :class="user.theme"  size="1.5rem"  class="text-white saturate-200" /><p class="!text-zinc-50"> 33</p></div>
+            <li class="w-full text-center relative group" >
+                <span class="absolute -bottom-10 px-2 py-1 w-32 bg-stone-800 rounded-lg right-1/2 translate-x-1/2 border border-stone-950 text-center text-white invisible group-hover:visible"><p>Post Counts</p></span>
+
+                <div class="shrink-0 border-b w-24 mx-auto flex items-center justify-center gap-2"  :class="user.theme" > <Icon name="basil:invoice-outline" :class="user.theme"  size="1.5rem"  class="text-white saturate-200" /><p class="!text-zinc-50"> {{user.posts.length}}</p></div>
+                <p class="shrink-0"> <Icon name="basil:clock-outline" size="1.5rem"  class="text-stone-200 saturate-200" /> 1 <span class="text-xs opacity-50">/ {{user.posts.length}}</span></p>
 
             </li>
-            <li class="text-center">
+            <li class="text-center relative group">
+                <span class="absolute -top-10 px-2 py-1 w-32 bg-stone-800 rounded-lg right-1/2 translate-x-1/2 border border-stone-950 text-center text-white invisible group-hover:visible"><p>Accept Counts</p></span>
                 <p class="shrink-0 border-b w-24"><Icon size="1.5rem" name="basil:lightning-alt-outline" class="text-yellow-500 saturate-200" /> 0.82</p>
                 <p class="shrink-0"> <Icon name="basil:check-solid" size="1.5rem"  class="text-lime-500 saturate-200" /> 15 <span class="text-xs opacity-50">/ 33</span></p>
                 <p class="shrink-0"> <Icon name="basil:cross-solid" size="1.5rem"  class="text-red-500 saturate-200" /> 21 <span class="text-xs opacity-50">/ 33</span></p>
                
             </li>
-            <li class="text-center">
+            <li class="text-center relative group">
+                <span class="absolute -top-10 px-2 py-1 w-32 bg-stone-800 rounded-lg right-1/2 translate-x-1/2 border border-stone-950 text-center text-white invisible group-hover:visible"><p>Like Counts</p></span>
                 <p class="shrink-0 border-b w-24"><Icon size="1.5rem" name="basil:lightning-alt-outline" class="text-yellow-500 saturate-200" /> 3.4</p>
                 <p class="shrink-0"> <Icon name="basil:like-outline" size="1.5rem"  class="text-my-blue saturate-200" /> 15</p>
                 <p class="shrink-0"> <Icon name="basil:dislike-outline" size="1.5rem"  class="text-my-pink saturate-200" /> 4</p>
@@ -103,16 +108,16 @@
 
         <!-- accepted post start -->
         <ul v-if="selectedTab == 'Accepted'" v-auto-animate>
-            <li v-for="postA in postsAccepted" :key="postA.id" class="my-3">
-                <post :post="postA" />
+            <li  class="my-3">
+                accepted
             </li>
         </ul>
         <!-- accepted post end -->
         
         <!-- not accepted post start -->
         <ul v-if="selectedTab == 'Deleted'" v-auto-animate>
-            <li v-for="postD in postsDeleted" :key="postD.id" class="my-3">
-                <post :post="postD" />
+            <li class="my-3">
+                deleted
             </li>
         </ul>
         <!-- not accepted post end -->
@@ -122,41 +127,33 @@
 
 </template>
 <script setup>
-
-// user posts
-const posts = computed(()=>{
-    let tempPosts = usePostsStore().getUserPosts.sort((a,b) => b.date - a.date)
-    tempPosts = tempPosts.sort((a,b) => b.isAccepted - a.isAccepted)
-    return tempPosts
+definePageMeta({
+    middleware:"after-auth"
 })
 
-// user accepted posts after countdown
-const postsAccepted = computed(()=>{
-    const tempPosts = usePostsStore().getUserAcceptedPosts.sort((a,b) => b.date - a.date)
-    return tempPosts
+onMounted(()=>{
+    useUserStore().getUser
+    usePostsStore().getPosts
 })
 
-// user not accepted posts after countdown
-const postsDeleted = computed(()=>{
-    const tempPosts = usePostsStore().getUserDeletedPosts.sort((a,b) => b.date - a.date)
-    return tempPosts
-})
+
+const usersb = useSupabaseUser()
 // user informations 
 const user = computed(()=>{
     return useUserStore().getUser
 })
-
-// user store
-const userStore = useUserStore()
-
-// edit modal toggle
-const openEditModal=ref(false)
-// selected tab 
-const selectedTab =ref("All")
-// for pp 
-const photoTemp = ref(user.value.photo)
-// for username
-const usernameTemp = ref(user.value.username)
+// user posts
+const posts = computed(()=>{
+    let tempPosts = usePostsStore().getUserPosts
+    tempPosts = tempPosts.sort((a,b) => b.date - a.date)
+    // tempPosts = tempPosts.sort((a,b) => b.isAccepted - a.isAccepted)
+    return tempPosts
+})
+const userStore = useUserStore() // user store
+const openEditModal=ref(false) // edit modal toggle
+const selectedTab =ref("All") // selected tab 
+const photoTemp = ref(user.value.photo) // for pp 
+const usernameTemp = ref(user.value.username) // for username
 
 // tab selector
 const selectTab=(tabName)=>{
@@ -177,6 +174,7 @@ const selectTab=(tabName)=>{
 // set color theme
 const setTheme =(theme)=>{
     userStore.setTheme(theme)
+    useUserStore().getUser
 }
 
 // change photo 
@@ -194,11 +192,11 @@ const saveChanges =()=>{
 
 // cancel edits
 const discardChanges =()=>{
-    
     usernameTemp.value=user.value.username
     photoTemp.value=user.value.photo
     openEditModal.value=false
 }
+
 </script>
 
 <style>
