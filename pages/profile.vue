@@ -107,7 +107,7 @@
         <!-- accepted post start -->
         <ul v-if="selectedTab == 'Accepted'" v-auto-animate>
                 <li v-for="post in userAcceptedPosts" :key="post.id" class="my-3">
-                    <post :post="post" />
+                    <post-mini :post="post" />
                 </li>
             </ul>
             <!-- accepted post end -->

@@ -1,7 +1,7 @@
 <template>
 
     <!-- POST CARD START -->
-    <div v-auto-animate class=" border rounded-lg max-w-lg w-[32rem]  transition-all relative">
+    <div v-auto-animate class=" border rounded-lg max-w-lg w-[32rem]  transition-all relative" :class="props.post.theme">
       <!-- post add date    -->
       <p class="absolute top-1 left-3 text-xs select-none">{{dateFormat(props.post.date)}}</p>
 
