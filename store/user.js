@@ -14,6 +14,48 @@ export const useUserStore = defineStore('user', {
             state.user = user.value.user_metadata
             return state.user
          }
+      },
+       getLikedPosts(state){
+         const user = useSupabaseUser()
+         const client = useSupabaseClient()
+         if(user.value){
+            var likes = user.value.user_metadata.likes
+            var likesArray = Array.from(likes)
+            var likesPosts=[]
+
+            console.log('likesArray :>> ', likesArray);
+
+            likesArray.forEach(async (element) =>{
+
+               const { data,error } = await client
+               .from('posts')
+               .select('*')
+               .eq( "id",element )
+               likesPosts.push(data)
+            })       
+            return  likesPosts
+         }
+      },
+      getDislikedPosts(state){
+         const user = useSupabaseUser()
+         const client = useSupabaseClient()
+         if(user.value){
+            var dislikes = user.value.user_metadata.dislikes
+            var dislikesArray = Array.from(dislikes)
+            var dislikesPosts=[]
+
+            console.log('likesArray :>> ', dislikesArray);
+
+            dislikesArray.forEach(async (element) =>{
+
+               const { data,error } = await client
+               .from('posts')
+               .select('*')
+               .eq( "id",element )
+               dislikesPosts.push(data)
+            })       
+            return  dislikesPosts
+         }
       }
     },
     actions: {

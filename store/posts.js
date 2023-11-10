@@ -44,7 +44,6 @@ export const usePostsStore = defineStore('posts', {
           .from('posts')
           .update({likes: postlikes})
           .eq( "id", postId )
-          console.log("database guncellendi")
           if(error) throw error;
       } catch (error) {
       }
@@ -98,7 +97,6 @@ export const usePostsStore = defineStore('posts', {
         else{
           likesTemp.push(postId)
           postlikes.push(userId)
-          console.log("cccc")
           this.postLikeAction(postId,likesTemp,postlikes)
         }
       }
@@ -132,7 +130,6 @@ export const usePostsStore = defineStore('posts', {
         dislikesTemp.push(postId)
         postDislikes.push(userId)
         this.postDislikeAction(postId,dislikesTemp,postDislikes)
-        console.log("içerir")
       }   
       //+1 dislike
       else{
@@ -211,7 +208,6 @@ export const usePostsStore = defineStore('posts', {
       getLikes(postId){
         this.getPosts
         const selectedpost = this.posts.filter(i => i.id == postId)
-        console.log('selectedpost :>> ', selectedpost[0].likes);
         return selectedpost[0].likes
       }
 

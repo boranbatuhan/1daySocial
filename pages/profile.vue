@@ -15,9 +15,7 @@
                     <NuxtImg draggable="false" class="w-full h-full object-cover select-none" :src="photoTemp" placeholder="/1daysocial-pink.png" />
                 </label>
             </div>
-            <label  for="idtemp" class="before:content-['@'] " :class="user.theme">
-                <input type="text" id="idtemp" class="bg-transparent underline focus:underline-offset-8 outline-none border-y border-r border-transparent focus:border-inherit pr-2 py-1 rounded-lg" v-model="usernameTemp">
-            </label>
+
 
             <!-- buttons -->
             <div class="w-full flex flex-row items-center justify-around">
@@ -57,7 +55,6 @@
             </ul>
         </div>
 
-        <p >likes : {{user.likes}}</p>
         <!-- counters  -->
         <ul class="flex flex-wrap gap-3 items-center justify-between w-full px-2 my-3">
             <li class="w-full text-center relative group" >
@@ -88,11 +85,12 @@
 
 
     <!-- tab nav start -->
-    <div class="flex w-96 items-center justify-between text-xl" v-auto-animate>
-        <div :class="[user.theme,{'border-b':selectedTab=='All'}]" @click="selectTab('All')" class="shrink-0 h-10 cursor-pointer w-1/4 text-center hover:bg-stone-800 py-1 group"><Icon size="2rem" name="basil:rows-solid" class="group-hover:hidden inline"/> <p class="hidden group-hover:inline">All</p> </div>
-        <div :class="[user.theme,{'border-b':selectedTab=='Accepted'}]" @click="selectTab('Accepted')" class="shrink-0 h-10 cursor-pointer w-1/4 text-center hover:bg-stone-800 py-1 group"><Icon size="2rem" name="basil:check-solid" class="group-hover:hidden inline"/> <p class="hidden group-hover:inline">Accepted</p> </div>
-        <div :class="[user.theme,{'border-b':selectedTab=='Deleted'}]" @click="selectTab('Deleted')" class="shrink-0 h-10 cursor-pointer w-1/4 text-center hover:bg-stone-800 py-1 group"><Icon size="2rem" name="basil:cross-solid" class="group-hover:hidden inline"/> <p class="hidden group-hover:inline">Deleted</p> </div>
-        <div :class="[user.theme,{'border-b':selectedTab=='Fire'}]" @click="selectTab('Fire')" class="shrink-0 h-10 cursor-pointer w-1/4 text-center hover:bg-stone-800 py-1 group"><Icon size="2rem" name="basil:fire-solid" class="group-hover:hidden inline"/> <p class="hidden group-hover:inline">Fire</p> </div>
+    <div class="flex w-[32rem] items-center justify-between text-xl" v-auto-animate>
+        <div :class="[user.theme,{'border-b':selectedTab=='All'}]" @click="selectTab('All')" class="shrink-0 h-10 cursor-pointer w-1/5 text-center hover:bg-stone-800 py-1 group"><Icon size="2rem" name="basil:rows-outline" class="group-hover:hidden inline"/> <p class="hidden group-hover:inline">All</p> </div>
+        <div :class="[user.theme,{'border-b':selectedTab=='Accepted'}]" @click="selectTab('Accepted')" class="shrink-0 h-10 cursor-pointer w-1/5 text-center hover:bg-stone-800 py-1 group"><Icon size="2rem" name="basil:check-outline" class="group-hover:hidden inline"/> <p class="hidden group-hover:inline">Accepted</p> </div>
+        <div :class="[user.theme,{'border-b':selectedTab=='Deleted'}]" @click="selectTab('Deleted')" class="shrink-0 h-10 cursor-pointer w-1/5 text-center hover:bg-stone-800 py-1 group"><Icon size="2rem" name="basil:cross-outline" class="group-hover:hidden inline"/> <p class="hidden group-hover:inline">Deleted</p> </div>
+        <div :class="[user.theme,{'border-b':selectedTab=='Liked'}]" @click="selectTab('Liked')" class="shrink-0 h-10 cursor-pointer w-1/5 text-center hover:bg-stone-800 py-1 group"><Icon size="2rem" name="basil:like-outline" class="group-hover:hidden inline"/> <p class="hidden group-hover:inline">liked</p> </div>
+        <div :class="[user.theme,{'border-b':selectedTab=='Disliked'}]" @click="selectTab('Disliked')" class="shrink-0 h-10 cursor-pointer w-1/5 text-center hover:bg-stone-800 py-1 group"><Icon size="2rem" name="basil:dislike-outline" class="group-hover:hidden inline"/> <p class="hidden group-hover:inline">disliked</p> </div>
     </div>
     <!-- tab nav end -->
 
@@ -100,27 +98,44 @@
     <div class="max-w-xl px-3 py-2  my-3">
         <!-- all post start -->
         <ul v-if="selectedTab == 'All'" v-auto-animate>
-            <li v-for="post in posts" :key="post.id" class="my-3">
+            <li v-for="post in userPosts" :key="post.id" class="my-3">
                 <post :post="post" />
             </li>
         </ul>
         <!-- all post end -->
-
+        
         <!-- accepted post start -->
         <ul v-if="selectedTab == 'Accepted'" v-auto-animate>
-            <li  class="my-3">
-                accepted
-            </li>
-        </ul>
-        <!-- accepted post end -->
-        
-        <!-- not accepted post start -->
-        <ul v-if="selectedTab == 'Deleted'" v-auto-animate>
-            <li class="my-3">
-                deleted
-            </li>
+                <li v-for="post in userAcceptedPosts" :key="post.id" class="my-3">
+                    <post :post="post" />
+                </li>
+            </ul>
+            <!-- accepted post end -->
+            
+            <!-- not accepted post start -->
+            <ul v-if="selectedTab == 'Deleted'" v-auto-animate>
+                <li v-for="post in userDeletedPosts" :key="post.id" class="my-3">
+                    <post-mini :post="post" />
+                </li>
+                
         </ul>
         <!-- not accepted post end -->
+
+        <!-- my liked posts start -->
+        <ul v-if="selectedTab == 'Liked'" v-auto-animate>
+            <li v-for="likedpost in likedPosts" :key="likedpost.id" class="my-3">
+                <post-mini :post="likedpost[0]" />
+            </li>
+        </ul>
+        <!-- my liked posts end -->
+
+        <!-- my disliked posts start -->
+        <ul v-if="selectedTab == 'Disliked'" v-auto-animate>
+            <li v-for="dislikedpost in dislikedPosts" :key="dislikedpost.id" class="my-3">
+                <post-mini :post="dislikedpost[0]" />
+            </li>
+        </ul>
+        <!-- my disliked posts end -->
     </div>
     <!-- posts container end -->
 </div>
@@ -134,6 +149,9 @@ definePageMeta({
 onMounted(()=>{
     useUserStore().getUser
     usePostsStore().getPosts
+    usePostsStore().getUserPosts
+    useUserStore().getLikedPosts
+    useUserStore().getDislikedPosts
 })
 
 
@@ -143,17 +161,42 @@ const user = computed(()=>{
     return useUserStore().getUser
 })
 // user posts
-const posts = computed(()=>{
+const userPosts = computed(()=>{
     let tempPosts = usePostsStore().getUserPosts
     tempPosts = tempPosts.sort((a,b) => b.date - a.date)
-    // tempPosts = tempPosts.sort((a,b) => b.isAccepted - a.isAccepted)
     return tempPosts
 })
+const userAcceptedPosts = computed(()=>{
+    let tempAcceptedPosts = userPosts.value
+    tempAcceptedPosts = tempAcceptedPosts.sort((a,b) => b.date - a.date)
+    tempAcceptedPosts = tempAcceptedPosts.filter((a) => a.isAccepted)
+    return tempAcceptedPosts
+})
+const userDeletedPosts = computed(()=>{
+    let tempDeletedPosts = userPosts.value
+    tempDeletedPosts = tempDeletedPosts.sort((a,b) => b.date - a.date)
+    tempDeletedPosts = tempDeletedPosts.filter((a) => !a.isAccepted)
+    return tempDeletedPosts
+})
+
+const likedPosts = computed(()=>{
+    let likedTempPosts = useUserStore().getLikedPosts
+    likedTempPosts = likedTempPosts.sort((a,b) => b.date - a.date)
+    return likedTempPosts
+})
+const dislikedPosts = computed(()=>{
+    let dislikedTempPosts = useUserStore().getDislikedPosts
+    dislikedTempPosts = dislikedTempPosts.sort((a,b) => b.date - a.date)
+    return dislikedTempPosts
+})
+
+
+
+
 const userStore = useUserStore() // user store
 const openEditModal=ref(false) // edit modal toggle
 const selectedTab =ref("All") // selected tab 
 const photoTemp = ref(user.value.photo) // for pp 
-const usernameTemp = ref(user.value.username) // for username
 
 // tab selector
 const selectTab=(tabName)=>{
@@ -186,13 +229,11 @@ const changePhoto= event=>{
 // save edits
 const saveChanges =()=>{
     userStore.updatePhoto(photoTemp.value)
-    userStore.updateUsername(usernameTemp.value)
     openEditModal.value=false
 }
 
 // cancel edits
 const discardChanges =()=>{
-    usernameTemp.value=user.value.username
     photoTemp.value=user.value.photo
     openEditModal.value=false
 }
