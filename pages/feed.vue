@@ -34,6 +34,7 @@ const { x, y } = useWindowScroll()
 
 const posts = computed(()=>{
     let tempPosts = usePostsStore().getPosts.sort((a,b) => b.date - a.date)
+    tempPosts = tempPosts.filter(i=> i.isCountdown || i.isAccepted)
     return tempPosts
 })
 

@@ -44,6 +44,7 @@ export const usePostsStore = defineStore('posts', {
           .from('posts')
           .update({likes: postlikes})
           .eq( "id", postId )
+          this.setPostsFromDB()
           if(error) throw error;
       } catch (error) {
       }
@@ -64,7 +65,7 @@ export const usePostsStore = defineStore('posts', {
     .from('posts')
     .update({dislikes: postDislikes})
     .eq( "id", postId )
-
+    this.setPostsFromDB()
         if(error) throw error;
     } catch (error) {
     }
@@ -92,12 +93,14 @@ export const usePostsStore = defineStore('posts', {
           likesTemp.push(postId)
           postlikes.push(userId)
           this.postLikeAction(postId,likesTemp,postlikes)
+
         }
         //+1 like
         else{
           likesTemp.push(postId)
           postlikes.push(userId)
           this.postLikeAction(postId,likesTemp,postlikes)
+
         }
       }
       //if clicked liked button +1 like to +0 like 
@@ -105,6 +108,7 @@ export const usePostsStore = defineStore('posts', {
         likesTemp = likesTemp.filter(i=> i!=postId)
         postlikes = postlikes.filter(i=> i!=userId)
         this.postLikeAction(postId,likesTemp,postlikes)
+
       }   
     }
   ,
@@ -130,12 +134,14 @@ export const usePostsStore = defineStore('posts', {
         dislikesTemp.push(postId)
         postDislikes.push(userId)
         this.postDislikeAction(postId,dislikesTemp,postDislikes)
+
       }   
       //+1 dislike
       else{
         dislikesTemp.push(postId)
         postDislikes.push(userId)
         this.postDislikeAction(postId,dislikesTemp,postDislikes)
+
       }
       }
       //if clicked liked button +1 dislike to +0 dislike 
