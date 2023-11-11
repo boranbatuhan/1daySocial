@@ -198,21 +198,35 @@ const openEditModal=ref(false) // edit modal toggle
 const selectedTab =ref("All") // selected tab 
 const photoTemp = ref(user.value.photo) // for pp 
 
+// scroll top
+const scrollTop=()=>{
+    window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+}
+
 // tab selector
 const selectTab=(tabName)=>{
     if(selectedTab.value==tabName){
         if(selectedTab.value=="All")
         {
             selectedTab.value="All"
+            scrollTop()
         }
         else{
             selectedTab.value="All"
+            scrollTop()
         }
     }
     else{
+        scrollTop()
         selectedTab.value=tabName
     }
 }
+
+
+
 
 // set color theme
 const setTheme =(theme)=>{

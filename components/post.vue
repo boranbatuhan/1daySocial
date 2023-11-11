@@ -4,19 +4,14 @@
     <div v-if="user" v-auto-animate class=" border rounded-lg max-w-lg w-[32rem]  transition-all relative" :class="[props.post.theme ,{'!opacity-20 hover:!opacity-80' : props.post.isCountdown == false && !props.post.isAccepted}]">
       <!-- post add date    -->
       <p class="absolute top-1 left-3 text-xs select-none">{{dateFormat(props.post.date)}}</p>
-      <!-- button fire start -->
-      <!-- <div class="absolute top-1 right-1" v-if="props.post.authorid != user.userid">
-        <div @click="fireBtn(props.post.id)" class="relative group w-fit h-fit  cursor-pointer" >
-          <span  class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-rose-600 group-hover:w-6 w-0 group-hover:h-6 h-0 blur-md  transition-all"></span>
-          <Icon :name="post.vote.isFire ==true ? 'basil:fire-solid' : 'basil:fire-outline'" size="2rem" :class="{'!text-rose-600': post.vote.isFire==true }" class="relative text-stone-50 group-hover:saturate-200 group-hover:text-rose-600" />
-        </div>
-      </div> -->
-      <!-- button fire end -->
+      <div v-if="user.userid == props.post.authorid" class="w-8 h-8 rounded-lg border absolute right-2 top-2 overflow-hidden" :class="user.theme">
+        <NuxtImg draggable="false" class="w-full h-full object-cover select-none" :src="user.photo" placeholder="/1daysocial-pink.png" />
+      </div>
       <!-- content start -->
       <div class="pb-3 pt-6 px-6">
         <p class="before:content-['@'] select-none cursor-pointer w-fit hover:underline mt-4">{{props.post.author}}</p>
-        <p class="before:content-['@'] select-none cursor-pointer w-fit hover:underline mt-4">{{props.post.authorid}}</p>
-        <p class="before:content-['@'] select-none cursor-pointer w-fit hover:underline mt-4">{{props.post.id}}</p>
+        <p class="before:content-['@'] select-none cursor-pointer w-fit hover:underline mt-4">sayac:{{props.post.isCountdown}}</p>
+        <p class="before:content-['@'] select-none cursor-pointer w-fit hover:underline mt-4">kabul:{{props.post.isAccepted}}</p>
         <p v-if="props.post.tag" class="text-end text-xs mb-2 before:content-['#'] hover:underline cursor-pointer" >{{props.post.tag}}</p>
 
         <p class="!text-white text-justify py-2">{{props.post.content}}</p>
@@ -69,7 +64,6 @@
 const user = computed(()=>{
   return useUserStore().getUser
 })
-const userStore = useUserStore()
 
 const checkdisabled = ref(false)
 // data from db via props
@@ -121,18 +115,35 @@ const dateFormat = (time)=>{
 }
 
 // timer 
-const timer = setInterval(() => {
-    post.timer=props.post.finaldate - Date.now()
-    if(props.post.finaldate - Date.now() <=0)
+const timer = setInterval(async () => {
+  if(props.post.isCountdown){
+    const client = useSupabaseClient()
+    post.timer = props.post.finaldate - Date.now()
+    let {data,error} = await client.from('posts').select("*").eq('id',props.post.id)
+    if(props.post.finaldate  <= Date.now() )
     {
         post.timer=0
-        usePostsStore().countdownDone(props.post.id)
+        usePostsStore().countdownDone(props.post.id,data)
         clearInterval(timer)
     }
+  }
 }, 1000);
 
 const checkUser = computed(()=>{
-return props.post.authorid === user.value.userid ? false : true
+  if(props.post.authorid === user.value.userid)
+  {
+    if(props.post.authorid === user.value.userid && props.post.isCountdown == false)
+    {
+      return true
+    }
+    else{
+
+      return false
+    }
+  }
+  else{
+    return true
+  }
 })
 
 const checkPostDislikeButton = computed(()=>{

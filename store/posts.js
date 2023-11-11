@@ -3,7 +3,7 @@ export const usePostsStore = defineStore('posts', {
      posts:[]
     }),
     getters: {
-      getPosts(state){
+       getPosts(state){
         const client = useSupabaseClient()
         const getPostDB = async()=>{
           try {
@@ -146,19 +146,32 @@ export const usePostsStore = defineStore('posts', {
       }
   
     },
-      countdownDone(postId){
-        this.posts.forEach(i => {
-            if(i.id == postId ){
-                i.countdown=false
-                if(i.likes.length> i.dislikes.length)
-                {
-                  i.isAccepted=true
-                }
-                else if( i.likes.length<= i.dislikes.length){
-                  i.isAccepted=false
-                }
-              }
-        } )
+    async countdownDone(postId,data){
+      const client = useSupabaseClient()
+
+      
+      
+      const updateisCountdown = async ()=>{
+        const {error} =  await client.from('posts').update({isCountdown: false}).eq( "id", postId )
+      }
+      const updateisActive = async (isAccepted)=>{
+        const {error} =  await client.from('posts').update({isAccepted: isAccepted}).eq( "id", postId )
+      }
+      if(data){
+        if(data[0].finaldate <= Date.now())
+        {
+
+          updateisCountdown()  // countdown is over
+          if(data[0].likes.length > data[0].dislikes.length) // accept for like > dislike
+          {
+            updateisActive(true)
+          }
+          else if( data[0].likes.length <= data[0].dislikes.length)// delete for dislike > like
+          {
+            updateisActive(false)
+          }
+        }
+        }
       },
       addPost(newPost){
         this.posts = [...this.posts, newPost]

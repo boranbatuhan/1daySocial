@@ -48,7 +48,7 @@ const addPost =()=>{
             author:username,
             auid:userid,
             date:nowDate,
-            finaldate: nowDate+600000,   //1000 = 1 sec
+            finaldate: nowDate+30000,   //1000 = 1 sec
             countdown:true,
             isAccepted:true,
             theme:userTemp.theme,
