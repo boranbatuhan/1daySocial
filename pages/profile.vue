@@ -148,6 +148,7 @@ definePageMeta({
 
 onMounted(()=>{
     useUserStore().getUser
+    usePostsStore().setPostsFromDB()
     usePostsStore().getPosts
     usePostsStore().getUserPosts
     useUserStore().getLikedPosts

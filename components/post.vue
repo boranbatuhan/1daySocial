@@ -117,11 +117,11 @@ const dateFormat = (time)=>{
 // timer 
 const timer = setInterval(async () => {
   if(props.post.isCountdown){
-    const client = useSupabaseClient()
     post.timer = props.post.finaldate - Date.now()
-    let {data,error} = await client.from('posts').select("*").eq('id',props.post.id)
     if(props.post.finaldate  <= Date.now() )
     {
+      const client = useSupabaseClient()
+      let {data,error} = await client.from('posts').select("*").eq('id',props.post.id)
         post.timer=0
         usePostsStore().countdownDone(props.post.id,data)
         clearInterval(timer)

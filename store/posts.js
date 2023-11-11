@@ -4,19 +4,7 @@ export const usePostsStore = defineStore('posts', {
     }),
     getters: {
        getPosts(state){
-        const client = useSupabaseClient()
-        const getPostDB = async()=>{
-          try {
-              const { data, error } = await client
-            .from('posts')
-            .select('*')
-            state.posts=data
-              if(error) throw error
-          } catch (error) {
-              console.log('error :>> ', error);
-          }
-        }
-        getPostDB()
+        
         return state.posts
       },
       getUserPosts(state){
@@ -27,7 +15,19 @@ export const usePostsStore = defineStore('posts', {
 
     },
     actions: {
-  
+      
+      async setPostsFromDB(){
+        const client = useSupabaseClient()
+          try {
+              const { data, error } = await client
+            .from('posts')
+            .select('*')
+            this.posts=data
+              if(error) throw error
+          } catch (error) {
+              console.log('error :>> ', error);
+          }
+      },
     async postLikeAction(postId,likesTemp,postlikes){
       var client = useSupabaseClient()
       
@@ -146,7 +146,7 @@ export const usePostsStore = defineStore('posts', {
       }
   
     },
-    async countdownDone(postId,data){
+    async setCountdownDone(postId,data){
       const client = useSupabaseClient()
 
       
@@ -157,7 +157,6 @@ export const usePostsStore = defineStore('posts', {
       const updateisActive = async (isAccepted)=>{
         const {error} =  await client.from('posts').update({isAccepted: isAccepted}).eq( "id", postId )
       }
-      if(data){
         if(data[0].finaldate <= Date.now())
         {
 
@@ -165,13 +164,18 @@ export const usePostsStore = defineStore('posts', {
           if(data[0].likes.length > data[0].dislikes.length) // accept for like > dislike
           {
             updateisActive(true)
+            this.setPostsFromDB()
           }
           else if( data[0].likes.length <= data[0].dislikes.length)// delete for dislike > like
           {
             updateisActive(false)
+            this.setPostsFromDB()
           }
+          this.setPostsFromDB()
         }
-        }
+      },
+    countdownDone(postId,data){
+        this.setCountdownDone(postId,data)
       },
       addPost(newPost){
         this.posts = [...this.posts, newPost]
@@ -211,6 +215,7 @@ export const usePostsStore = defineStore('posts', {
           try {
              const { data, error } = await client.from('posts').insert([postValue]).select();
              updateProfile(data)
+             this.setPostsFromDB()
              if(error) throw error;
           } catch (error) {
              console.log('error :>> ', error);

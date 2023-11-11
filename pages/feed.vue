@@ -24,6 +24,7 @@ definePageMeta({
 })
 onMounted(()=>{
     useUserStore().getUser
+    usePostsStore().setPostsFromDB()
     usePostsStore().getPosts
 })
 
